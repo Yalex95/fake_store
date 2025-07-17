@@ -25,6 +25,7 @@
               <p class="text-sm font-medium text-gray-900"> {{ product.price }}</p>
             </div>
           </div>
+          <Button  :buttonId="product.id" :rounded="true" buttonText="add to cart" :isVariant="true" variant="light-blue"/>
         </div>
 </template>
 <script setup>
