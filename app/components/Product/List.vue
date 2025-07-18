@@ -4,7 +4,7 @@
       <h2 class="text-2xl font-bold tracking-tight text-gray-900">Products</h2>
 
       <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        <ProductItem :products="data"/>
+        <ProductItem :products="productsList"/>
       </div>
     </div>
   </div>
@@ -12,7 +12,7 @@
 
 <script setup>
 
-const {data, status, pending,error, refresh} = await useFetch('https://fakestoreapi.com/products',{
+const {data: productsList, status, pending,error, refresh} = await useFetch('https://fakestoreapi.com/products',{
 
 })
 </script>
