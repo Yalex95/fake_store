@@ -12,7 +12,7 @@
       </div>
 
       <!-- Categories -->
-      <ProductCategories />
+      <!-- <ProductCategories /> -->
       <!-- New araivals -->
       <ProductArrivals/>
 

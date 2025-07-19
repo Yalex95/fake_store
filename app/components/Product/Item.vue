@@ -27,7 +27,7 @@
       </a>
     </h3>
     <p class="text-xl font-light text-gray-900"> $ {{ product.price }}</p>
-    <UButton icon="solar:cart-plus-bold-duotone" size="lg" class="w-full flex text-center justify-center  hover:bg-green-700 font-bold rounded-md"   color="success"
+    <UButton icon="qlementine-icons:add-to-cart-16" size="lg" class="w-full flex text-center justify-center  hover:bg-green-700 font-bold rounded-md"   color="success"
       >Add to cart</UButton
     >
     </div>
