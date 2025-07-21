@@ -8,8 +8,8 @@
       class="rounded-xl p-5 lg:aspect-auto lg:h-80 text-center container flex items-center overflow-hidden relative"
     >
     <ULink as="button" class="absolute top-0 right-0">  
-      <UIcon name="material-symbols:favorite-outline" class="size-5 group-hover:hidden block" />
-      <UIcon name="material-symbols:favorite" class="size-5 group-hover:block hidden text-red-500" />
+      <UIcon name="material-symbols:favorite-outline" class="size-5 hover:hidden block" />
+      <UIcon name="material-symbols:favorite" class="size-5 hover:block hidden text-red-500" />
     </ULink>
       <div class=" ">
         <img
