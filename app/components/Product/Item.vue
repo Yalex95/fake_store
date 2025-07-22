@@ -13,9 +13,9 @@
     </ULink>
       <div class=" ">
         <img
-          :src="product.image"
+          :src="product.image_url"
           :alt="product.title"
-          class="rounded-md bg-gray-200 group-hover:opacity-75"
+          class="rounded-md bg-gray-200 group-hover:opacity-75 w-full h-full  object-contain"
         />
       </div>
     </div>

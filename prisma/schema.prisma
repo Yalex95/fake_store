@@ -9,43 +9,128 @@ datasource db {
 }
 
 model users {
-  id            String    @id @default(uuid()) @db.Uuid
-  name          String?   @db.VarChar(255)
-  username     String?   @db.VarChar(255)
-  password      String?   @db.VarChar(255)
-  createdAt     DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime  @updatedAt @db.Timestamp(6)
-  isActive      Boolean   @default(true)
-  isAdmin       Boolean   @default(false)
-  email         String?   @db.VarChar(255)
-  avatar         String?
-  deletedAt     DateTime? @db.Timestamp(6)
+  id        String      @id @default(uuid()) @db.Uuid
+  name      String?     @db.VarChar(255)
+  username  String?     @db.VarChar(255)
+  password  String?     @db.VarChar(255)
+  isActive  Boolean     @default(true)
+  role      String?     @default("user") @db.VarChar(255) // user, admin, etc.
+  email     String?     @db.VarChar(255)
+  avatar    String?
+  deletedAt DateTime?   @db.Timestamp(6)
+  createdAt DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt DateTime    @updatedAt @db.Timestamp(6)
+  orders    orders[]
+  addresses addresses[]
+  reviews   reviews[]
+  wishlists wishlists[]
 }
 
 model products {
-  id            String    @id @default(uuid()) @db.Uuid
-  title         String?   @db.VarChar(255)
-  price         Float?
-  description   String?   @db.Text
-  categoryId String      @db.Uuid             
-  category   categories  @relation(fields: [categoryId], references: [id])
-  image         String?   @db.VarChar(255)
-  rating        Float?
-  itemCode       String?   @db.VarChar(255)
-  stock         Int?      @default(0)
-  color         String?   @db.VarChar(255)
-  size          String?   @db.VarChar(255)
-  brand         String?   @db.VarChar(255)
-  createdAt     DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime  @updatedAt @db.Timestamp(6)
-  deletedAt     DateTime? @db.Timestamp(6)
+  id             String           @id @default(uuid()) @db.Uuid
+  title          String?          @db.VarChar(255)
+  description    String?          @db.Text
+  price          Float?
+  stock          Int?             @default(0)
+  categoryId     String           @db.Uuid
+  category       categories       @relation(fields: [categoryId], references: [id])
+  image_url      String?          @db.VarChar(255)
+  rating         Float?
+  itemCode       String?          @db.VarChar(255)
+  color          String?          @db.VarChar(255)
+  size           String?          @db.VarChar(255)
+  brand          String?          @db.VarChar(255)
+  createdAt      DateTime         @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime         @updatedAt @db.Timestamp(6)
+  deletedAt      DateTime?        @db.Timestamp(6)
+  order_items    order_items[]
+  product_images product_images[]
+  reviews        reviews[]
+  wishlists      wishlists[]
 }
+
+model product_images {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @db.Uuid
+  product   products @relation(fields: [productId], references: [id])
+  image_url String?  @db.VarChar(255)
+}
+
 model categories {
-  id            String    @id @default(uuid()) @db.Uuid
-  name          String?   @db.VarChar(255)
-  image         String?   @db.VarChar(255)
-  createdAt     DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime  @updatedAt @db.Timestamp(6)
-  deletedAt     DateTime? @db.Timestamp(6)
-  products      products[]
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String?    @db.VarChar(255)
+  slug      String?    @db.VarChar(255)
+  // image         String?   @db.VarChar(255)
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt DateTime   @updatedAt @db.Timestamp(6)
+  deletedAt DateTime?  @db.Timestamp(6)
+  products  products[]
 }
+
+model orders {
+  id               String        @id @default(uuid()) @db.Uuid
+  userId           String        @db.Uuid
+  user             users         @relation(fields: [userId], references: [id])
+  total_amount     Float?
+  status           String?       @db.VarChar(255)
+  createdAt        DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime      @updatedAt @db.Timestamp(6)
+  order_items      order_items[]
+  deletedAt        DateTime?     @db.Timestamp(6)
+  shipping_address String?       @db.VarChar(255)
+  billing_address  String?       @db.VarChar(255)
+  //add payment details
+}
+
+model order_items {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId   String   @db.Uuid
+  order     orders   @relation(fields: [orderId], references: [id])
+  productId String   @db.Uuid
+  product   products @relation(fields: [productId], references: [id])
+  quantity  Int?     @default(0)
+  price     Float?
+}
+
+model addresses {
+  id         String  @id @default(uuid()) @db.Uuid
+  userId     String  @db.Uuid
+  user       users   @relation(fields: [userId], references: [id])
+  fullname   String? @db.VarChar(255)
+  street     String? @db.VarChar(255)
+  city       String? @db.VarChar(255)
+  state      String? @db.VarChar(255)
+  country    String? @db.VarChar(255)
+  zipCode    String? @db.VarChar(255)
+  is_default Boolean @default(false)
+}
+
+model reviews {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      users     @relation(fields: [userId], references: [id])
+  productId String    @db.Uuid
+  product   products  @relation(fields: [productId], references: [id])
+  rating    Int?      @default(0)
+  comment   String?   @db.Text
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+
+  @@unique([userId, productId]) // Ensure a user can only review a product once
+}
+
+model wishlists {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      users     @relation(fields: [userId], references: [id])
+  productId String    @db.Uuid
+  product   products  @relation(fields: [productId], references: [id])
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+
+  @@unique([userId, productId]) // Ensure a user can only have one wishlist entry per product
+}
+
+//TODO: add cupons , cupons_redemptions

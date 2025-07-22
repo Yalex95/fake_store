@@ -8,18 +8,20 @@ async function main() {
     await prisma.products.create({
       data: {
         title: faker.commerce.productName(),
-        price: parseFloat(faker.commerce.price()),
         description: faker.commerce.productDescription(),
+        price: parseFloat(faker.commerce.price()),
+        stock: faker.number.int({min:1,max:100}),
         category: {
-          connect:{id:'16d90697-f576-4caf-8100-5aacceb5fe37'}
+          connect:{id:'31f91529-4697-4180-8ae1-4b9e6d96f7f0'}
         },
-        image: faker.image.url(),
+        image_url: faker.image.urlPicsumPhotos(),
         rating: parseFloat((Math.random() * 5).toFixed(1)),
-        itemCode: faker.string.uuid(),
-        stock: faker.number.int({ min: 0, max: 100 }),
-        color: faker.color.human(),
+        itemCode: faker.string.alphanumeric(10),
+        color: faker.color.rgb(),
         size: faker.helpers.arrayElement(['S', 'M', 'L', 'XL']),
-        brand: faker.company.name()
+        brand: faker.company.name(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }
     })
   }

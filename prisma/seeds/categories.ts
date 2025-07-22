@@ -8,9 +8,8 @@ async function main() {
     await prisma.categories.create({
 
        data: {
-        // Replace 'name' and 'image' with actual fields from your 'Category' model
-        name: faker.lorem.words(2),
-        image: faker.image.url(),
+        name: faker.commerce.department(),
+        slug: faker.helpers.slugify(faker.commerce.department()).toLowerCase(),
         createdAt: new Date(),
         updatedAt: new Date(),
       }
