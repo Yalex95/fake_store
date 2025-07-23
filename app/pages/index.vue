@@ -12,9 +12,10 @@
       </div>
 
       <!-- Categories -->
-      <!-- <ProductCategories /> -->
-      <!-- New araivals -->
-      <ProductArrivals/>
+      <ProductCategories />
+      <!-- Offers -->
+       <!-- recomended -->
+        
 
       <ProductList />
       

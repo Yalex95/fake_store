@@ -40,6 +40,10 @@
       </div>
 </template>
 <script setup>
+const route = useRoute();
+const router = userRouter();
+const limit = ref(2);
+
 const {
   data: arrivals,
   status,

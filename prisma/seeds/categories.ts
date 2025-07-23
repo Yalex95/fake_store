@@ -9,7 +9,6 @@ async function main() {
 
        data: {
         name: faker.commerce.department(),
-        slug: faker.helpers.slugify(faker.commerce.department()).toLowerCase(),
         createdAt: new Date(),
         updatedAt: new Date(),
       }
