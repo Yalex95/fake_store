@@ -9,6 +9,7 @@ async function main() {
 
        data: {
         name: faker.commerce.department(),
+        image: faker.image.urlLoremFlickr({category:'fashion'}),
         createdAt: new Date(),
         updatedAt: new Date(),
       }

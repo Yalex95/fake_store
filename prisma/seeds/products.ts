@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 const prisma = new PrismaClient()
 
 async function main() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     await prisma.products.create({
       data: {
         title: faker.commerce.productName(),
@@ -12,7 +12,7 @@ async function main() {
         price: parseFloat(faker.commerce.price()),
         stock: faker.number.int({min:1,max:100}),
         category: {
-          connect:{id:'31f91529-4697-4180-8ae1-4b9e6d96f7f0'}
+          connect:{id:'e7402596-012a-4960-8060-81dfe9e41a23'}
         },
         image_url: faker.image.urlPicsumPhotos(),
         rating: parseFloat((Math.random() * 5).toFixed(1)),

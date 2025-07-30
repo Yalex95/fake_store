@@ -2,12 +2,16 @@
   <div class=" flex justify-center">
     <div class="mx-auto w-8/12  py-16 sm:py-24 lg:w-8/12 ">
       
-        <SectionHeader title="Our Products"/>
+        <SectionHeader :title="title"/>
 
       <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 ">
-        <ProductItem :products="productsList.data"/>
+        <ProductItem 
+        v-if="productsList.data.length > 0" :products="productsList?.data"/>
+        <div v-else class="text-black-500">
+          <p>No products to show.</p>
+        </div>
       </div>
-     <div class="flex justify-center items center mt-5">
+     <div v-if="productsList.data.length > 0" class="flex justify-center items center mt-5">
        <UPagination v-model:page="page" 
        :items-per-page="limit"
         :total="productsList.meta.total"
@@ -18,18 +22,29 @@
 </template>
 
 <script setup >
+const props = defineProps({
+  title:{
+    type: String,
+    default: 'Our Products',
+  }
+})
 const route = useRoute();
 const router = useRouter();
 const limit =ref(3)
 const  page = ref(parseInt(route.query.page) || 1);
+const category = ref(route.query.category || null)
+const query = computed(()=>{
+  return {
+    category: category.value,
+    limit: limit.value,
+    page: page.value
+  }
+})
 
 
-
-const {data: productsList, status, pending,error, refresh} = await useFetch(`/api/products?limit=${limit.value}`,{
+const {data: productsList, status, pending,error, refresh} = await useFetch(`/api/products`,{
 method:'GET',
-query:{
-  page,
-},
+query
 })
 
 watch(page,(newPage)=>{
