@@ -11,7 +11,7 @@
           <p>No products to show.</p>
         </div>
       </div>
-     <div v-if="productsList.data.length > 0" class="flex justify-center items center mt-5">
+     <div v-if="productsList.data.length > 0 && productsList.data.length > limit" class="flex justify-center items center mt-5">
        <UPagination v-model:page="page" 
        :items-per-page="limit"
         :total="productsList.meta.total"
@@ -26,17 +26,20 @@ const props = defineProps({
   title:{
     type: String,
     default: 'Our Products',
+  },
+  limit:{
+    type: Number,
+    default:10
   }
 })
 const route = useRoute();
 const router = useRouter();
-const limit =ref(3)
 const  page = ref(parseInt(route.query.page) || 1);
 const category = ref(route.query.category || null)
 const query = computed(()=>{
   return {
     category: category.value,
-    limit: limit.value,
+    limit: props.limit,
     page: page.value
   }
 })

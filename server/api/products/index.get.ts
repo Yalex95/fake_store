@@ -37,7 +37,7 @@ const where: Prisma.productsWhereInput =  {
     where.stock = inStock ? { gt: 0 } : 0;
   }
 
-  const [data, total] = await Promise.all([
+  const [rawData, total] = await Promise.all([
     await prisma.products.findMany({
     select: {
       title: true,
@@ -47,12 +47,15 @@ const where: Prisma.productsWhereInput =  {
       rating: true,
       itemCode: true,
       stock: true,
-      color: true,
+      colors: {
+        select:{
+          color: true
+        }
+      },
       size: true,
       brand: true,
       category: {
         select: {
-          id: true,
           name: true,
         },
       },
@@ -68,6 +71,10 @@ const where: Prisma.productsWhereInput =  {
   })
   ])
 
+const data = rawData.map((product)=>({
+  ...product,
+  colors: product.colors.map((c)=>c.color).filter(Boolean)
+}))
   const pages = Math.ceil(total / limit);
   
   const first_page = 1;

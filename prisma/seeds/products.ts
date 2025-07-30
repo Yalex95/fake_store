@@ -12,12 +12,11 @@ async function main() {
         price: parseFloat(faker.commerce.price()),
         stock: faker.number.int({min:1,max:100}),
         category: {
-          connect:{id:'e7402596-012a-4960-8060-81dfe9e41a23'}
+          connect:{id:'a4635bdb-f5db-498e-aef5-d26889f1dd2b'}
         },
         image_url: faker.image.urlPicsumPhotos(),
         rating: parseFloat((Math.random() * 5).toFixed(1)),
         itemCode: faker.string.alphanumeric(10),
-        color: faker.color.rgb(),
         size: faker.helpers.arrayElement(['S', 'M', 'L', 'XL']),
         brand: faker.company.name(),
         createdAt: new Date(),

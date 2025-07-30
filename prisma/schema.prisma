@@ -17,50 +17,78 @@ model users {
   role      String?     @default("user") @db.VarChar(255) // user, admin, etc.
   email     String?     @db.VarChar(255)
   avatar    String?
+
   deletedAt DateTime?   @db.Timestamp(6)
   createdAt DateTime    @default(now()) @db.Timestamp(6)
   updatedAt DateTime    @updatedAt @db.Timestamp(6)
+
   orders    orders[]
   addresses addresses[]
   reviews   reviews[]
   wishlists wishlists[]
+
+  @@unique([email])
 }
 
 model products {
-  id             String           @id @default(uuid()) @db.Uuid
-  title          String?          @db.VarChar(255)
-  description    String?          @db.Text
-  price          Float?
-  stock          Int?             @default(0)
-  categoryId     String           @db.Uuid
-  category       categories       @relation(fields: [categoryId], references: [id])
-  image_url      String?          @db.VarChar(255)
-  rating         Float?
-  itemCode       String?          @db.VarChar(255)
-  color          String?          @db.VarChar(255)
-  size           String?          @db.VarChar(255)
-  brand          String?          @db.VarChar(255)
-  createdAt      DateTime         @default(now()) @db.Timestamp(6)
-  updatedAt      DateTime         @updatedAt @db.Timestamp(6)
-  deletedAt      DateTime?        @db.Timestamp(6)
+  id          String     @id @default(uuid()) @db.Uuid
+  brandId     String     @db.Uuid
+  brand       brands     @relation(fields: [brandId], references: [id])
+  categoryId  String     @db.Uuid
+  category    categories @relation(fields: [categoryId], references: [id])
+
+  title       String?    @db.VarChar(255)
+  description String?    @db.Text
+  rating      Float?
+  createdAt   DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime   @updatedAt @db.Timestamp(6)
+  deletedAt   DateTime?  @db.Timestamp(6)
+
+  reviews   reviews[]
+  wishlists wishlists[]
+  variants  variants[]
+}
+
+model variants {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @db.Uuid
+  product   products @relation(fields: [productId], references: [id])
+
+  sku       String   @unique @db.VarChar(255)
+  color     String?  @db.VarChar(100)
+  size      String?  @db.VarChar(255)
+  price     Float?
+  image_url String?  @db.VarChar(255)
+  stock     Int?     @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  deletedAt DateTime @db.Timestamp(6)
+
   order_items    order_items[]
   product_images product_images[]
-  reviews        reviews[]
-  wishlists      wishlists[]
+}
+
+model brands {
+  id       String     @id @default(uuid()) @db.Uuid
+  name     String     @unique @db.VarChar(255)
+  logo     String?    @db.VarChar(255)
+  products products[]
 }
 
 model product_images {
   id        String   @id @default(uuid()) @db.Uuid
-  productId String   @db.Uuid
-  product   products @relation(fields: [productId], references: [id])
+  variantId String   @db.Uuid
+  variants  variants @relation(fields: [variantId], references: [id])
   image_url String?  @db.VarChar(255)
+
+  @@unique([variantId, image_url])
 }
 
 model categories {
   id        String     @id @default(uuid()) @db.Uuid
-  name      String?    @db.VarChar(255)
-  // slug      String?    @db.VarChar(255)
-  image         String?   @db.VarChar(255)
+  name      String?    @unique @db.VarChar(255)
+  image     String?    @db.VarChar(255)
   createdAt DateTime   @default(now()) @db.Timestamp(6)
   updatedAt DateTime   @updatedAt @db.Timestamp(6)
   deletedAt DateTime?  @db.Timestamp(6)
@@ -86,8 +114,8 @@ model order_items {
   id        String   @id @default(uuid()) @db.Uuid
   orderId   String   @db.Uuid
   order     orders   @relation(fields: [orderId], references: [id])
-  productId String   @db.Uuid
-  product   products @relation(fields: [productId], references: [id])
+  variantId String   @db.Uuid
+  variant   variants @relation(fields: [variantId], references: [id])
   quantity  Int?     @default(0)
   price     Float?
 }
