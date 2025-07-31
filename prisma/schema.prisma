@@ -55,7 +55,7 @@ model variants {
   productId String   @db.Uuid
   product   products @relation(fields: [productId], references: [id])
 
-  sku       String   @unique @db.VarChar(255)
+  sku       String   @unique @db.VarChar(255)// Brand-category-model-color-size/variant
   color     String?  @db.VarChar(100)
   size      String?  @db.VarChar(255)
   price     Float?
@@ -65,7 +65,7 @@ model variants {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @db.Timestamp(6)
-  deletedAt DateTime @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
 
   order_items    order_items[]
   product_images product_images[]
@@ -81,7 +81,7 @@ model brands {
 model product_images {
   id        String   @id @default(uuid()) @db.Uuid
   variantId String   @db.Uuid
-  variants  variants @relation(fields: [variantId], references: [id])
+  variant  variants @relation(fields: [variantId], references: [id])
   image_url String?  @db.VarChar(255)
 
   @@unique([variantId, image_url])
@@ -101,15 +101,17 @@ model orders {
   id               String        @id @default(uuid()) @db.Uuid
   userId           String        @db.Uuid
   user             users         @relation(fields: [userId], references: [id])
+  
   total_amount     Float?
   status           String?       @db.VarChar(255)
-  createdAt        DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt        DateTime      @updatedAt @db.Timestamp(6)
-  order_items      order_items[]
-  deletedAt        DateTime?     @db.Timestamp(6)
   shipping_address String?       @db.VarChar(255)
   billing_address  String?       @db.VarChar(255)
+  
+  createdAt        DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime      @updatedAt @db.Timestamp(6)
+  deletedAt        DateTime?     @db.Timestamp(6)
   //add payment details
+  order_items      order_items[]
 }
 
 model order_items {
@@ -118,6 +120,7 @@ model order_items {
   order     orders   @relation(fields: [orderId], references: [id])
   variantId String   @db.Uuid
   variant   variants @relation(fields: [variantId], references: [id])
+
   quantity  Int?     @default(0)
   price     Float?
 }
@@ -141,8 +144,10 @@ model reviews {
   user      users     @relation(fields: [userId], references: [id])
   productId String    @db.Uuid
   product   products  @relation(fields: [productId], references: [id])
+
   rating    Int?      @default(0)
   comment   String?   @db.Text
+
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
@@ -152,10 +157,12 @@ model reviews {
 
 model wishlists {
   id        String    @id @default(uuid()) @db.Uuid
+
   userId    String    @db.Uuid
   user      users     @relation(fields: [userId], references: [id])
   productId String    @db.Uuid
   product   products  @relation(fields: [productId], references: [id])
+
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
