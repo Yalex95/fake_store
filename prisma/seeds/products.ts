@@ -7,18 +7,16 @@ async function main() {
   for (let i = 0; i < 5; i++) {
     await prisma.products.create({
       data: {
-        title: faker.commerce.productName(),
-        description: faker.commerce.productDescription(),
-        price: parseFloat(faker.commerce.price()),
-        stock: faker.number.int({min:1,max:100}),
+        brand:{
+          connect:{id:''}
+        },
         category: {
           connect:{id:'a4635bdb-f5db-498e-aef5-d26889f1dd2b'}
         },
-        image_url: faker.image.urlPicsumPhotos(),
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
         rating: parseFloat((Math.random() * 5).toFixed(1)),
-        itemCode: faker.string.alphanumeric(10),
-        size: faker.helpers.arrayElement(['S', 'M', 'L', 'XL']),
-        brand: faker.company.name(),
+
         createdAt: new Date(),
         updatedAt: new Date(),
       }

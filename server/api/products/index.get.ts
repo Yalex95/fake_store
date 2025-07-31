@@ -33,26 +33,26 @@ const where: Prisma.productsWhereInput =  {
     };
   }
 
-  if (inStock !== null) {
-    where.stock = inStock ? { gt: 0 } : 0;
-  }
+  // if (inStock !== null) {
+  //   where.stock = inStock ? { gt: 0 } : 0;
+  // }
 
-  const [rawData, total] = await Promise.all([
+  const [data, total] = await Promise.all([
     await prisma.products.findMany({
     select: {
       title: true,
-      price: true,
+      // price: true,
       description: true,
-      image_url: true,
+      // image_url: true,
       rating: true,
-      itemCode: true,
-      stock: true,
-      colors: {
-        select:{
-          color: true
-        }
-      },
-      size: true,
+      // itemCode: true,
+      // stock: true,
+      // colors: {
+      //   select:{
+      //     color: true
+      //   }
+      // },
+      // size: true,
       brand: true,
       category: {
         select: {
@@ -71,10 +71,10 @@ const where: Prisma.productsWhereInput =  {
   })
   ])
 
-const data = rawData.map((product)=>({
-  ...product,
-  colors: product.colors.map((c)=>c.color).filter(Boolean)
-}))
+// const data = rawData.map((product)=>({
+//   ...product,
+//   colors: product.colors.map((c)=>c.color).filter(Boolean)
+// }))
   const pages = Math.ceil(total / limit);
   
   const first_page = 1;
