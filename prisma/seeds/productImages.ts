@@ -9,7 +9,7 @@ async function main(){
     await prisma.product_images.create({
       data:{
         variant: {
-          connect:{ id:''}
+          connect:{ id:'25d6724a-f36d-4f0d-8350-22bb5df8830f'}
         } ,
         image_url: faker.image.urlLoremFlickr({category:'technology'})
       }

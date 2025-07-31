@@ -7,8 +7,8 @@ async function main() {
   for (let i = 0; i < 5; i++) {
     await prisma.variants.create({
       data: {
-        product: { connect: { id: "" } },
-        sku: "NI-CL-A9F2-BL-M",
+        product: { connect: { id: "02ecab24-1394-482c-922f-a510334d35a4" } },
+        sku: `NI-CL-A9F2${i}-BL-M`,
         color: faker.color.rgb(),
         size: faker.helpers.arrayElement(["S", "M", "L", "XL"]),
         price: parseFloat(faker.commerce.price()),
