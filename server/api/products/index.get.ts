@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
   const skip = (page - 1) * limit;
 const where: Prisma.productsWhereInput =  {
       deletedAt: null,
+      
     };
     
   if (title) {
@@ -37,30 +38,27 @@ const where: Prisma.productsWhereInput =  {
   //   where.stock = inStock ? { gt: 0 } : 0;
   // }
 
-  const [data, total] = await Promise.all([
+  const [rawData, total] = await Promise.all([
     await prisma.products.findMany({
-    select: {
-      title: true,
-      // price: true,
-      description: true,
-      // image_url: true,
-      rating: true,
-      // itemCode: true,
-      // stock: true,
-      // colors: {
-      //   select:{
-      //     color: true
-      //   }
-      // },
-      // size: true,
-      brand: true,
-      category: {
-        select: {
-          name: true,
-        },
-      },
-    },
+      // relationLoadStrategy:'join',
     where,
+    include:{
+      variants:{
+        select:{
+          image_url: true,
+          color: true,
+          size: true,
+          price: true,
+          stock: true,
+          percentageOff: true
+        },
+        where:{ deletedAt:null},
+        take: 1
+      },
+      category: {
+        select:{name:true}
+      }
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -71,10 +69,15 @@ const where: Prisma.productsWhereInput =  {
   })
   ])
 
-// const data = rawData.map((product)=>({
-//   ...product,
-//   colors: product.colors.map((c)=>c.color).filter(Boolean)
-// }))
+const data = rawData.map((product,index)=>{
+  const {variants,...rest}= product;
+  return {
+    ...rest,
+    defaultProduct: variants[0] ??null
+  }
+})
+
+
   const pages = Math.ceil(total / limit);
   
   const first_page = 1;
