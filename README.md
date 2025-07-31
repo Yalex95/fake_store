@@ -90,3 +90,19 @@ products can belong to different brands. This table stores brand information, in
 poducts can be organized into categories. This table stores category information, including the category name and description. It is used to categorize products in the application.
 ### _Wishlist_
 users can create wishlists to save products they are interested in. This table stores the user ID and the product ID for each item in the wishlist. It is used to manage user wishlists in the application.
+
+# Create DB tables
+
+- Users
+- Brands
+- Categories
+
+## 
+- products
+- variants
+- product images
+- orders
+- orders items
+- addresses
+- reviews
+- wishlist
