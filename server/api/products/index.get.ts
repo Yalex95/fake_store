@@ -4,20 +4,21 @@ import { getQuery } from "h3";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  
+
+  //Sanitize and validate params
   const title = typeof query.title === "string" ? query.title : "";
   const category = typeof query.category === "string" ? query.category : null;
-  const inStock = query.inStock === "true" ? true : query.inStock === "false" ? false : null;
 
   //Pagination
   const page = parseInt(query.page as string) || 1;
   const limit = parseInt(query.limit as string) || 10;
   const skip = (page - 1) * limit;
-const where: Prisma.productsWhereInput =  {
-      deletedAt: null,
-      
-    };
-    
+
+  //filter construction
+  const where: Prisma.productsWhereInput = {
+    deletedAt: null,
+  };
+
   if (title) {
     where.title = {
       contains: title,
@@ -33,59 +34,74 @@ const where: Prisma.productsWhereInput =  {
       },
     };
   }
-
-  // if (inStock !== null) {
-  //   where.stock = inStock ? { gt: 0 } : 0;
-  // }
-
+  //Get data and count products
   const [rawData, total] = await Promise.all([
     await prisma.products.findMany({
-      // relationLoadStrategy:'join',
-    where,
-    include:{
-      variants:{
-        select:{
-          image_url: true,
-          color: true,
-          size: true,
-          price: true,
-          stock: true,
-          percentageOff: true
+      where,
+      include: {
+        variants: {
+          select: {
+            id: true,
+            image_url: true,
+            color: true,
+            size: true,
+            price: true,
+            stock: true,
+            percentageOff: true,
+            sku: true,
+          },
+          where: { deletedAt: null },
+          // take: 1,
         },
-        where:{ deletedAt:null},
-        take: 1
+        category: {
+          select: { name: true },
+        },
       },
-      category: {
-        select:{name:true}
-      }
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    skip,
-    take: limit,
-  }),
-  prisma.products.count({  where
-  })
-  ])
-
-const data = rawData.map((product,index)=>{
-  const {variants,...rest}= product;
-  return {
-    ...rest,
-    defaultProduct: variants[0] ??null
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: limit,
+    }),
+    prisma.products.count({ where }),
+  ]);
+  function getfinalPrice(
+    productPrice: number | null,
+    percentageOff: number | null
+  ): number {
+    if (!productPrice) return 0;
+    if (!percentageOff) return 0;
+    return productPrice * (1 - percentageOff / 100);
   }
-})
+  //Clean result and return default variant
+  const data = rawData.map((product) => {
+    const { variants, ...rest } = product;
+    return {
+      ...rest,
+      availableColors: variants.map((v) => ({
+        color: v.color,
+        variantID: v.id,
+      })),
+      defaultVariant: {
+        ...(variants[0] ?? null),
+        finalPrice: getfinalPrice(
+          variants[0]?.price,
+          variants[0]?.percentageOff
+        ),//TODO: it will ned to be a col if the db will grow, for best practices it shoud be a col in product variants
+      },
+    };
+  });
 
-
+  //generate pagination meta
   const pages = Math.ceil(total / limit);
-  
   const first_page = 1;
   const last_page = pages;
-  const first_page_url =`?page=1`
+
+  //genrate pages
+  const first_page_url = `?page=1`;
   const last_page_url = `?page=${pages}`;
-  const next_page_url = page <pages ? `?page=${page+1}` : null;
-  const previous_page_url = page>1 ?`?page=${page-1}`:null;
+  const next_page_url = page < pages ? `?page=${page + 1}` : null;
+  const previous_page_url = page > 1 ? `?page=${page - 1}` : null;
   return {
     data,
     meta: {
@@ -98,7 +114,7 @@ const data = rawData.map((product,index)=>{
       previous_page_url,
       limit,
       total,
-      pages
+      pages,
     },
   };
 });
