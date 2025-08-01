@@ -26,5 +26,5 @@
 definePageMeta({
   layout: false,
 });
-
+// const appConfig = useAppConfig()
 </script>
