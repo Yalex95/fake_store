@@ -2,36 +2,34 @@
   <div
     v-for="product in products"
     :key="product.id"
-    class="  border-2 border-solid rounded-xl border-gray-200 px-5 py-3"
+    class="  border-2 border-solid rounded-xl border-gray-200 px-5 pt-5 pb-3"
   >
   <!-- image and favorite icon -->
     <div
-      class="rounded-xl p-5 lg:aspect-auto lg:h-80 text-center container flex items-center overflow-hidden relative"
+      class="rounded-xl  lg:aspect-auto lg:h-80 text-center container flex items-center overflow-hidden relative"
     >
       <!-- favorite -->
-      <ULink as="button" class="absolute top-0 right-0">
+      <ULink as="button" class="group absolute top-1 right-1 cursor-pointer ">
         <UIcon
           name="material-symbols:favorite-outline"
-          class="size-8 hover:hidden block"
+          class="size-8 group-hover:hidden block"
         />
         <UIcon
           name="material-symbols:favorite"
-          class="size-8 hover:block hidden text-red-500"
+          class="size-8 group-hover:block hidden text-red-500"
         />
       </ULink>
       <!-- image -->
-      <div class=" ">
-        <img
-          v-show="product?.defaultVariant && product?.defaultVariant?.image_url"
-          :src="product?.defaultVariant?.image_url"
-          :alt="product.title"
-          class="rounded-md bg-gray-200 group-hover:opacity-75 w-full h-full object-contain"
-        />
-      </div>
+      <img
+        v-show="product?.defaultVariant && product?.defaultVariant?.image_url"
+        :src="product?.defaultVariant?.image_url"
+        :alt="product.title"
+        class="rounded-md bg-gray-200 group-hover:opacity-75 w-full h-full object-cover"
+      />
     </div>
   <!-- image and favorite icon end -->
 
-    <div class="flex justify-start gap-3 flex-col pb-6">
+    <div class="flex justify-start gap-3 flex-col pb-6 mt-3">
       <div >
         <p class="text-gray-400 mb-0 text-sm">
           <span class="font-semibold">SKU:</span>
@@ -112,21 +110,4 @@ const setStars = (index: number, productRating: float) => {
 };
 
 
-const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Must be at least 8 characters')
-})
-
-type Schema = z.output<typeof schema>
-
-const state = reactive<Partial<Schema>>({
-  email: undefined,
-  password: undefined
-})
-
-const toast = useToast()
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
-  console.log(event.data)
-}
 </script>
