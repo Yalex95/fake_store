@@ -87,7 +87,7 @@ export default defineEventHandler(async (event) => {
         finalPrice: getfinalPrice(
           variants[0]?.price,
           variants[0]?.percentageOff
-        ),//TODO: it will ned to be a col if the db will grow, for best practices it shoud be a col in product variants
+        ), //TODO: it will ned to be a col if the db will grow, for best practices it shoud be a col in product variants
       },
     };
   });

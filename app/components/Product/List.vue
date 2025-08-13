@@ -50,6 +50,9 @@ method:'GET',
 query
 })
 
+// const { data: productsList, error, refresh } = await useAsyncData('products', () =>
+//   $fetch('/api/products', { method: 'GET', query: query.value })
+// )
 watch(page,(newPage)=>{
   router.push({
     query:{
