@@ -3,7 +3,7 @@
     class="  border-2 border-solid rounded-xl border-gray-200  px-5 pt-5 pb-3">
     <a v-if="product?.id" :href="`/product/${product?.defaultVariant?.id}`" class=" cursor-pointer">
       <!-- image and favorite icon -->
-      <div class="rounded-xl  lg:aspect-auto lg:h-80 text-center container flex items-center overflow-hidden relative">
+      <div class="rounded-xl  lg:aspect-auto lg:h-56 text-center container flex items-center overflow-hidden relative">
         <!-- favorite -->
         <ULink as="button" class="group absolute top-1 right-1 cursor-pointer ">
           <UIcon name="material-symbols:favorite-outline" class="size-8 group-hover:hidden block" />
@@ -11,8 +11,8 @@
         </ULink>
         <!-- image -->
         <img :src="product?.defaultVariant?.image_url || '/images/no_image.png'" :alt="product.title"
-          :class="['rounded-md bg-gray-200 group-hover:opacity-75 w-full h-full', !product?.defaultVariant?.image_url ? 'object-fit p-5' : 'object-cover']"
-          class="rounded-md bg-gray-200 group-hover:opacity-75 w-full h-full object-cover" />
+          :class="['rounded-md bg-gray-200 group-hover:opacity-75 w-full h-56', !product?.defaultVariant?.image_url ? 'object-fit p-5' : 'object-cover']"
+          class="rounded-md bg-gray-200 group-hover:opacity-75 " />
 
       </div>
       <!-- image and favorite icon end -->

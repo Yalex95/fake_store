@@ -20,12 +20,13 @@
           </div>
         </div>
         <!-- selected image -->
-        <div class="w-full">
+        <div class="w-full overflow-hidden  h-[400px] ">
           <img
             :src="
               productDetails.image_url || '/images/no_image.png'
             "
             :alt="productDetails.title"
+            class="w-[500px] h-[400px]  object-contain aspect-[1/1]"
           />
         </div>
       </div>
