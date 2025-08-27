@@ -22,8 +22,12 @@ FROM deps as build
 
 # Copiamos todo el código fuente
 COPY . .
+# Copiamos explícitamente la carpeta prisma por si el contexto no la incluye
+COPY prisma ./prisma
+# Debug opcional (quítalo después de confirmar que existe el schema en el contenedor)
+RUN ls -la /app && ls -la /app/prisma
 
-RUN npx prisma generate
+RUN npx prisma generate 
 # RUN npx prisma migrate deploy --schema=./prisma/schema.prisma
 # Run the build script.
 RUN npm run build
@@ -31,12 +35,15 @@ RUN npm run build
 
 # FROM base as final
 FROM node:${NODE_VERSION}-alpine AS final
+
 WORKDIR /app
 ENV NODE_ENV=production
 
 # Use production node environment by default.
 # ENV NODE_ENV production
 COPY --from=build /app/.output ./.output
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/prisma ./prisma
 
 # Permisos para el usuario node
 RUN chown -R node:node /app
