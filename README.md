@@ -24,6 +24,20 @@ To get started with the Nuxt Fake Store, follow these steps:
    npm i
    npm run dev
     ```
+## Build Docker Container 
+```bash
+ docker compose up --build 
+ ```
+## Start aplication 
+```bash
+docker compose up 
+```
+
+## Connect to db
+## migrate
+```bash 
+npx prisma migrate deploy
+```
 
 ## Commands to run Prisma:
 
