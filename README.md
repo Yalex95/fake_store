@@ -1,75 +1,136 @@
-# Nuxt Minimal Starter
+# 🛒 Nuxt Fake Store
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A **Nuxt 4** fake e-commerce store powered by:
 
-## Setup
+* [faker js](https://fakerjs.dev/guide/)
+Used Faker JS to generate fake data for testing and development
 
-Make sure to install dependencies:
+* [Prisma](https://www.prisma.io/)
+Prisma is used as an ORM to interact with the database
 
+* [Tailwind CSS](https://tailwindcss.com/)
+Tailwind CSS is used for styling the application
+* [Nuxt UI](https://nuxtui.com/)
+Nuxt UI is used for building user interfaces in the application
+* [Pinia](https://pinia.vuejs.org/)
+Pinia is used for state management in the application
+* [Docker](https://www.docker.com/get-started/)
+Docker is used to contain 
+* [Postgre](https://www.docker.com/get-started/)
+Data base used on this application
+
+---
+## 🚀 Getting Started
+Follow these steps to set up the project:
+
+### 1. Clone & Install Dependencies
+   ```bash
+   git clone
+   cd nuxt-fake-store
+   npm i
+    ```
+### 2. Build Docker containers 
 ```bash
-# npm
-npm install
+ docker compose up --build 
+ ```
+### 3. Start the aplication 
+```bash
+docker compose up 
+```
+➡ Your server will be available at http://localhost:3000
 
-# pnpm
-pnpm install
+### 4. Connect to the DB
+use your favorite db client to connect(default: PostgreSQL)
 
-# yarn
-yarn install
-
-# bun
-bun install
+### 5. Run Database Migrations
+```bash 
+npx prisma migrate deploy
 ```
 
-## Development Server
+### 6. Seed the db
+⚠️ Seed in the correct order:
+Step 1 (no relations)
+ - Users
+- Brands
+- Categories
+Step 2 (with relations)
+- products
+- variants
+- product images
+- orders
+- orders items
+- addresses
+- reviews
+- wishlist
+---
+## 🛠️ Prisma Commands
 
-Start the development server on `http://localhost:3000`:
+- `npx prisma generate` 
+-> generates Prisma client from schema `prisma/schema.prisma`.
 
-```bash
-# npm
-npm run dev
+- `npx prisma migrate reset`
+-> Resets and reapplies all migrations from the beginning (dev only).
 
-# pnpm
-pnpm dev
 
-# yarn
-yarn dev
+- `npx prisma migrate dev --name change-id-to-uuid` -> Creates a new migration
 
-# bun
-bun run dev
-```
+- `npx tsx prisma/seeds/seed.ts`-> Run custom seed script
 
-## Production
+---
+## DB Schema Overview
 
-Build the application for production:
+#### 📌 Users
 
-```bash
-# npm
-npm run build
+- Stores user info (name, email, password, etc.) for authentication & management.
 
-# pnpm
-pnpm build
+#### 📌 Products
 
-# yarn
-yarn build
+- Contains product details (name, description, price, etc.).
 
-# bun
-bun run build
-```
+#### 📌 Variants
 
-Locally preview production build:
+- Represents different versions of a product (sizes, colors, etc.).
 
-```bash
-# npm
-npm run preview
+#### 📌 Product Images
 
-# pnpm
-pnpm preview
+- Stores multiple images for each product.
 
-# yarn
-yarn preview
+#### 📌 Reviews
 
-# bun
-bun run preview
-```
+- User-generated product feedback (rating, content, author).
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+#### 📌 Orders
+
+- Stores order details (user, total amount, status).
+
+#### 📌 Order Items
+
+- Links orders with purchased products.
+
+#### 📌 Addresses
+
+- User shipping & billing addresses.
+
+#### 📌 Brands
+
+- Brand information to categorize products.
+
+#### 📌 Categories
+
+- Organizes products into categories.
+
+#### 📌 Wishlist
+
+- Users can save products they are interested in.
+
+## 📦 Tech Stack
+
+Frontend: Nuxt 4, Nuxt UI, Tailwind CSS
+
+State Management: Pinia
+
+Database & ORM: PostgreSQL + Prisma
+
+Data Generation: Faker.js
+
+Environment: Docker
