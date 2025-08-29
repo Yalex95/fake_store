@@ -1,6 +1,6 @@
-# Nuxt Fake Store
+# 🛒 Nuxt Fake Store
 
-A Nuxt 4 store with Prisma , Faker Js, Taiwind Css, NuxtUI and Pinia 
+A **Nuxt 4** fake e-commerce store powered by:
 
 * [faker js](https://fakerjs.dev/guide/)
 Used Faker JS to generate fake data for testing and development
@@ -14,104 +14,46 @@ Tailwind CSS is used for styling the application
 Nuxt UI is used for building user interfaces in the application
 * [Pinia](https://pinia.vuejs.org/)
 Pinia is used for state management in the application
+* [Docker](https://www.docker.com/get-started/)
+Docker is used to contain 
+* [Postgre](https://www.docker.com/get-started/)
+Data base used on this application
 
-## Getting Started
-To get started with the Nuxt Fake Store, follow these steps:
-1. Clone the repository:
+---
+## 🚀 Getting Started
+Follow these steps to set up the project:
+
+### 1. Clone & Install Dependencies
    ```bash
    git clone
    cd nuxt-fake-store
    npm i
-   npm run dev
     ```
-## Build Docker Container 
+### 2. Build Docker containers 
 ```bash
  docker compose up --build 
  ```
-## Start aplication 
+### 3. Start the aplication 
 ```bash
 docker compose up 
 ```
+➡ Your server will be available at http://localhost:3000
 
-## Connect to db
-## migrate
+### 4. Connect to the DB
+use your favorite db client to connect(default: PostgreSQL)
+
+### 5. Run Database Migrations
 ```bash 
 npx prisma migrate deploy
 ```
 
-## Commands to run Prisma:
-
-- `npx prisma generate` 
-generates the Prisma client based on the schema defined in `prisma/schema.prisma`.
-
-- `prisma nuxt`
-  generates the Nuxt module for Prisma, allowing you to use Prisma in your Nuxt application
-
-- `npx prisma migrate reset`
- resets the database and applies all migrations from the beginning. It should apply only on development environments
-
-
-- `npx prisma migrate dev --name change-id-to-uuid` detects changes in the schema and creates a new migration file
-
-- `npx tsx prisma/seed.ts` seeds the database with a seeder file
-- `npx prisma db seed ` 
-seeds the database with a seeder file defined in `prisma/seed.ts`
-
-
-## DB tables
-
-- [**users**](#users)
-
-- [**products** ](#products)
-
-- [**variants**](#variants)
-
-- [**products_images**](#products_images)
-
-- [**reviews**](#reviews)
-
-- [**orders**](#orders)
-
-- [**orders_items**](#orders_items)
-
-- [**addresses**](#addresses)
-
-- [**brands**](#brands)
-
-- [**categories**](#categories)
-
-- [**wishlist**](#wishlist)
-
-### _Users_
- it's a table that stores user information, including their name, email, password, and other details. It is used for authentication and user management in the application.
-### _Products_
-a table that stores product information, including the product name, description, price, and other details. It is used to display products in the application.
-### _Products Variants_
-variants are different versions of a product, such as different sizes or colors. This table stores information about the variants, including the variant name, price, and other details. It is used to manage product variations in the application.
-### _Products Images_
-each product can have multiple images associated with it. This table stores the image URLs and their corresponding product IDs. It is used to display product images in the application.
-### _Reviews_
-Reviews are user-generated feedback on products. This table stores the review content, rating, and the user who submitted the review. It is used to display product reviews in the application.
-### _Orders_
-orders are created when a user purchases products. This table stores order details, including the user ID, total amount, and order status. It is used to manage orders in the application.
-### _Order Items_
-it's a table that stores the individual items within an order. Each order can have multiple items, and this table links the order to the specific products purchased. It is used to manage the contents of each order in the application.
-### _Addresses_
-stores user addresses for shipping and billing purposes. This table includes details such as the user's name, address, city, state, and postal code. It is used to manage user addresses in the application.
-### _Brands_
-products can belong to different brands. This table stores brand information, including the brand name and description. It is used to categorize products by brand in the application.
-### _Categories_
-poducts can be organized into categories. This table stores category information, including the category name and description. It is used to categorize products in the application.
-### _Wishlist_
-users can create wishlists to save products they are interested in. This table stores the user ID and the product ID for each item in the wishlist. It is used to manage user wishlists in the application.
-
-# Create DB tables
-
-- Users
+### 6. Seed the db
+⚠️ Seed in the correct order:
+Step 1 (no relations)
+ - Users
 - Brands
 - Categories
-
-## 
+Step 2 (with relations)
 - products
 - variants
 - product images
@@ -120,3 +62,75 @@ users can create wishlists to save products they are interested in. This table s
 - addresses
 - reviews
 - wishlist
+---
+## 🛠️ Prisma Commands
+
+- `npx prisma generate` 
+-> generates Prisma client from schema `prisma/schema.prisma`.
+
+- `npx prisma migrate reset`
+-> Resets and reapplies all migrations from the beginning (dev only).
+
+
+- `npx prisma migrate dev --name change-id-to-uuid` -> Creates a new migration
+
+- `npx tsx prisma/seeds/seed.ts`-> Run custom seed script
+
+---
+## DB Schema Overview
+
+#### 📌 Users
+
+- Stores user info (name, email, password, etc.) for authentication & management.
+
+#### 📌 Products
+
+- Contains product details (name, description, price, etc.).
+
+#### 📌 Variants
+
+- Represents different versions of a product (sizes, colors, etc.).
+
+#### 📌 Product Images
+
+- Stores multiple images for each product.
+
+#### 📌 Reviews
+
+- User-generated product feedback (rating, content, author).
+
+#### 📌 Orders
+
+- Stores order details (user, total amount, status).
+
+#### 📌 Order Items
+
+- Links orders with purchased products.
+
+#### 📌 Addresses
+
+- User shipping & billing addresses.
+
+#### 📌 Brands
+
+- Brand information to categorize products.
+
+#### 📌 Categories
+
+- Organizes products into categories.
+
+#### 📌 Wishlist
+
+- Users can save products they are interested in.
+
+## 📦 Tech Stack
+
+Frontend: Nuxt 4, Nuxt UI, Tailwind CSS
+
+State Management: Pinia
+
+Database & ORM: PostgreSQL + Prisma
+
+Data Generation: Faker.js
+
+Environment: Docker
