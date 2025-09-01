@@ -16,7 +16,7 @@ async function main() {
 
 main()
   .then(() => {
-    console.log("Fake Brands Inserted");
+    console.log("Fake Brands Insertedsdssd");
     return prisma.$disconnect();
   })
   .catch(async (e) => {

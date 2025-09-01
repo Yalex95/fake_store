@@ -1,0 +1,20 @@
+# Base
+ARG NODE_VERSION=20.19.0
+FROM node:${NODE_VERSION}-alpine
+
+WORKDIR /app
+
+# Copia solo package.json y package-lock para instalar deps
+COPY package*.json ./
+
+RUN npm install
+
+# Copia Prisma Client
+COPY prisma ./prisma
+RUN npx prisma generate
+
+# Expone puerto Nuxt dev
+EXPOSE 3000
+
+# CMD para desarrollo
+CMD ["npm", "run", "dev"]
