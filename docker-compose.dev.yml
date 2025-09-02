@@ -1,23 +1,25 @@
-version: "3.9"
+
 
 services:
-  server:
+  app:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    image: node:20.19.0
+    command: npm run dev 
     environment:
-      NODE_ENV: development
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
+        HOST: 0.0.0.0
     volumes:
-      - .:/app
-      - /app/node_modules
+        - ./:/app
+        - /app/node_modules  
+    working_dir: /app
+    hostname: web
+    ports:
+        - "3000:3000" # Nuxt port
+        - "24678:24678" # Vite port
     depends_on:
       db:
         condition: service_healthy
-
   db:
     image: postgres:latest
     restart: always

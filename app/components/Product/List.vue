@@ -1,10 +1,9 @@
 <template>
-  <div class=" flex justify-center">
-    <div class="mx-auto xl:w-11/12   py-16 sm:py-24 lg:w-11/12 ">
+    <div class=" xl:w-11/12   py-16 sm:py-24 lg:w-11/12 ">
       
         <SectionHeader :title="title"/>
 
-      <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8 ">
+      <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 ">
         <ProductItem 
         v-if="productsList.data.length > 0" :products="productsList?.data"/>
         <div v-else class="text-black-500">
@@ -18,7 +17,7 @@
          />
      </div>
     </div>
-  </div>
+ 
 </template>
 
 <script setup >

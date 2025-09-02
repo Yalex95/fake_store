@@ -12,7 +12,7 @@
       </div>
 
       <!-- Categories -->
-      <div class="flex">
+      <div class="flex justify-between">
         <div class="w-1/4">
           <div class="flex justify-center items-center">
             <div class="flex justify-center">
@@ -26,11 +26,7 @@
             </div>
           </div>
         </div>
-        <div class="w-full">
-          <div class="flex justify-center items-center">
-            <ProductList />
-          </div>
-        </div>
+        <ProductList />
       </div>
       <!-- Offers -->
       <!-- recomended -->

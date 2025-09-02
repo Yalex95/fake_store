@@ -13,6 +13,16 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    server: {
+      watch: {
+        usePolling: true,
+        interval: 300 // puedes probar entre 100–300ms
+      },
+      hmr: {
+        host: 'localhost',
+        port: 3001
+      }
+    },
     ssr: {
       // No externaliza Prisma, deja que se use solo Node
       external: ["@prisma/client"]
@@ -24,7 +34,4 @@ export default defineNuxtConfig({
         },
     
   },
-  // build: {
-  //   transpile: []
-  // }
 })
