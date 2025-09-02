@@ -24,18 +24,30 @@ Data base used on this application
 Follow these steps to set up the project:
 
 ### 1. Clone & Install Dependencies
-   ```bash
-   git clone
-   cd nuxt-fake-store
-   npm i
-    ```
+``` bash
+git clone
+cd nuxt-fake-store
+npm i
+
+```
+
 ### 2. Build Docker containers 
-```bash
+#### Production
+``` bash
  docker compose up --build 
  ```
+ #### Dev
+ ``` bash
+ docker compose -f docker-compose.dev.yml build
+ ```
 ### 3. Start the aplication 
-```bash
+#### Production
+``` bash
 docker compose up 
+```
+#### Dev
+```
+docker compose -f docker-compose.dev.yml up
 ```
 ➡ Your server will be available at http://localhost:3000
 
@@ -48,6 +60,12 @@ npx prisma migrate deploy
 ```
 
 ### 6. Seed the db
+#### sedd on Dev Environment
+```
+docker compose exec server npx tsx prisma/seeds/products.ts
+```
+
+
 ⚠️ Seed in the correct order:
 Step 1 (no relations)
  - Users
@@ -57,6 +75,7 @@ Step 2 (with relations)
 - products
 - variants
 - product images
+
 - orders
 - orders items
 - addresses

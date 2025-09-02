@@ -1,0 +1,48 @@
+
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: node:20.19.0
+    command: npm run dev 
+    environment:
+        HOST: 0.0.0.0
+    volumes:
+        - ./:/app
+        - /app/node_modules  
+    working_dir: /app
+    hostname: web
+    ports:
+        - "3000:3000" # Nuxt port
+        - "24678:24678" # Vite port
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:latest
+    restart: always
+    user: postgres
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fake_store
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
+
+secrets:
+  db-password:
+    file: db/password.txt
