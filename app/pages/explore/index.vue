@@ -4,7 +4,9 @@
     <h1 class="text-2xl font-bold">{{route.query.category}}</h1>
   </div>
 
-  <ProductList :title="explore_filter"/>
+  <div class="flex justify-center w-10/12 mx-auto">
+    <ProductList :title="explore_filter"/>
+  </div>
  </NuxtLayout>
 </template>\
 <script setup>

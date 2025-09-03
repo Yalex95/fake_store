@@ -12,10 +12,14 @@
       </div>
 
       <!-- Categories -->
-      <div class="flex justify-between">
-        <!-- <Filter/> -->
-         <CategoryFilter/>
-         sladkssd
+      <div class="flex justify-between   gap-x-20">
+        <div class="w-1/4 border-r-1 border-gray-100 pt-10 ps-10">
+          <p class="font-bold text-lg">Filter By</p>
+          <Filter url="categories" filterName="Categories"/>
+              <!-- <hr class="text-gray-200 "/> -->
+          <Filter url="brands" filterName="Brands"/>
+        </div>
+       
         <ProductList />
       </div>
       <!-- Offers -->
@@ -24,9 +28,6 @@
   </div>
 </template>
 <script setup>
-// import { CategoryCheckBoxGroup } from '#components';
-
-// import CheckBoxGroup from '~/components/Category/check-box-group/index.vue'
 definePageMeta({
   layout: false,
 });

@@ -1,6 +1,6 @@
 <template>
   <div :class="wrapperClass">
-    <h2 :class="textClass">
+    <h2  :class="textClass">
        {{ title }} </h2>
   </div>
 </template>
@@ -17,7 +17,7 @@ const props = defineProps({
   wrapperClass:{
     type: String,
     default:"flex justify-start"
-  }
+  },
 })
 
 </script>

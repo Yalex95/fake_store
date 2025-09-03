@@ -37,4 +37,10 @@ export default defineNuxtConfig({
     //   transpile: []
     // }
   },
+  nitro: {
+    watchOptions: {
+      usePolling: true,
+      interval: 100,
+    },
+  },
 });

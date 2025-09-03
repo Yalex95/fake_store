@@ -8,7 +8,7 @@
           <div
             class="mt-3 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
           >
-            <UCheckboxGroup v-model="value" :items="items" />
+            <UCheckboxGroup v-model="selectedCategories" :items="categories" />
           </div>
         </div>
       </div>
@@ -16,9 +16,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { CheckboxGroupItem, CheckboxGroupValue } from '@nuxt/ui'
+interface Category {
+  name: string;
+}
 
-const items = ref<CheckboxGroupItem[]>(['System', 'Light', 'Dark'])
-const value = ref<CheckboxGroupValue[]>(['System'])
-
+const categories = ref<string[]>([]);
+const selectedCategories = ref<string[]>([]);
+const {data: categoriesData,status,pending,error} = await useFetch<Category[]>(`/api/categories`)
+// console.log(categoriesData)
+if (categoriesData.value) {
+  categories.value = categoriesData.value.map(cat => cat.name);
+}
 </script>

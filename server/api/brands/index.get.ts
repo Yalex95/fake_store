@@ -15,5 +15,5 @@ export default defineEventHandler(async(event)=>{
       name: "desc"
     }
   })
-  return {data}
+  return data
 });
