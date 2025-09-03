@@ -5,12 +5,12 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  for (let i = 0; i < 5; i++) {
+  // for (let i = 0; i < 5; i++) {
     await prisma.users.create({
       data: {
         name: faker.person.fullName(),
         username: faker.internet.username(),
-        password: bcrypt.hashSync(faker.internet.password(), 10),
+        password: bcrypt.hashSync('123456'),
         isActive: true,
         role: "user",
         email: faker.internet.email(),
@@ -19,7 +19,7 @@ async function main() {
         updatedAt: new Date(),
       },
     });
-  }
+  // }
 }
 main()
   .then(() => {

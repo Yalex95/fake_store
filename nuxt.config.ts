@@ -5,37 +5,27 @@ export default defineNuxtConfig({
   modules: ["@nuxt/ui", ["@prisma/nuxt", { client: false }]],
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
   ui: {
-    // prefix: 'Nuxt',
     fonts: false,
     colorMode: false,
   },
 
   vite: {
     server: {
-      watch: {
-        usePolling: true,
-        // interval: 300 // puedes probar entre 100–300ms
-      },
-
-      hmr: { overlay: false },
+      watch: { usePolling: true},
+      hmr: { overlay: false,timeout: 30000, },
     },
     build: {
-      // si usas SSR
       rollupOptions: {},
     },
     ssr: {
-      // No externaliza Prisma, deja que se use solo Node
-      external: ["@prisma/client"],
+      external: ["@prisma/client", "oxc-parser", "jsonwebtoken", "bcryptjs"],
     },
     resolve: {
       alias: {
-        ".prisma/client/index-browser":
-          "./node_modules/.prisma/client/index-browser.js",
+        "@prisma/client/index-browser":
+          "/app/node_modules/.prisma/client/index-browser.js",
       },
     },
-    // build: {
-    //   transpile: []
-    // }
   },
   nitro: {
     watchOptions: {

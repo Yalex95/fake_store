@@ -1,6 +1,6 @@
 # Base
 ARG NODE_VERSION=20.19.0
-FROM node:${NODE_VERSION}-alpine
+FROM node:${NODE_VERSION}-bullseye
 
 WORKDIR /app
 

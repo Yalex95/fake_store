@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: node:20.19.0
+    image: node:20.19.0-bullseye
     command: npm run dev 
     environment:
         HOST: 0.0.0.0
