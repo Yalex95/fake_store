@@ -2,21 +2,32 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', ["@prisma/nuxt", { client: false }], "nuxt-headlessui", "@nuxt/icon"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    ["@prisma/nuxt", { client: false }],
+    "nuxt-headlessui",
+    "@nuxt/icon",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["defineStore"],
+      },
+    ],
+    'pinia-plugin-persistedstate/nuxt',
+  ],
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
- 
 
   vite: {
     server: {
-      watch: { usePolling: true},
-      
+      watch: { usePolling: true },
+
       hmr: {
-        protocol: 'ws',
-        host: 'localhost',
+        protocol: "ws",
+        host: "localhost",
         port: 3000,
       },
     },
-  }
+  },
   //   build: {
   //     rollupOptions: {},
   //   },
