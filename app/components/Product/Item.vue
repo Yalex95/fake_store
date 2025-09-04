@@ -6,8 +6,8 @@
       <div class="rounded-xl  lg:aspect-auto lg:h-56 text-center container flex items-center overflow-hidden relative">
         <!-- favorite -->
         <NuxtLink as="button" class="group absolute top-1 right-1 cursor-pointer ">
-          <UIcon name="material-symbols:favorite-outline" class="size-8 group-hover:hidden block" />
-          <UIcon name="material-symbols:favorite" class="size-8 group-hover:block hidden text-red-500" />
+          <!-- <UIcon name="material-symbols:favorite-outline" class="size-8 group-hover:hidden block" />
+          <UIcon name="material-symbols:favorite" class="size-8 group-hover:block hidden text-red-500" /> -->
         </NuxtLink>
         <!-- image -->
         <img :src="product?.defaultVariant?.image_url || '/images/no_image.png'" :alt="product.title"
@@ -28,7 +28,7 @@
           </h3>
         </div>
         <div class="flex justify-start gap-1">
-          <UIcon v-for="i in 5" :name="setStars(i, product.rating)" class="size-6" />
+          <!-- <UIcon v-for="i in 5" :name="setStars(i, product.rating)" class="size-6" /> -->
         </div>
         <div class="flex justify-start gap-1 overflow-hidden">
           <button v-for="i in product.availableColors" @on-button-click="viewProduct(i.variantID)" :key="i.variantID"
@@ -46,7 +46,7 @@
           </div>
           <div v-if="product?.defaultVariant?.percentageOff"
             class="bg-red-500 flex gap-1 items-center text-white rounded-full px-2 py-1 text-xs w-1/3 h-8 justify-center ">
-            <UIcon name="ic:round-discount" class="size-3 hover:hidden block" />
+            <!-- <UIcon name="ic:round-discount" class="size-3 hover:hidden block" /> -->
             - {{ product?.defaultVariant?.percentageOff }}%
           </div>
         </div>

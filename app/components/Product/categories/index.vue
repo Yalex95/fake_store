@@ -5,7 +5,7 @@
       <NuxtLink v-for="category in categories" :key="category.id"
         class="text-lg font-semibold uppercase flex flex-col gap-4 items-center justify-center p-10 hover:bg-gray-100 "
         :to="{path:`/explore`,query:{category:category.name}}">
-        <UIcon :name="icons[category.name ?? ''] || 'mdi:help-circle'" class="size-12 inline-block" />
+        <!-- <UIcon :name="icons[category.name ?? ''] || 'mdi:help-circle'" class="size-12 inline-block" /> -->
         <p>{{ category.name }}</p>
       </NuxtLink>
 

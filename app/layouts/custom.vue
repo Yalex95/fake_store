@@ -29,8 +29,8 @@
 
             <h3 class="font-bold mb-3 uppercase">Contact Us</h3>
             <ul>
-              <li> <UIcon name="i-lucide-lightbulb" class="size-5" /> <a href="mailto:fakestore@fake.com">OnlineShop@fake.com</a> </li>
-              <li> <UIcon name="i-lucide-lightbulb" class="size-5" /> Boulevard Agua Caliente C 11999, Hipodromo, Tijuana, B.C. </li>
+              <!-- <li> <UIcon name="i-lucide-lightbulb" class="size-5" /> <a href="mailto:fakestore@fake.com">OnlineShop@fake.com</a> </li> -->
+              <!-- <li> <UIcon name="i-lucide-lightbulb" class="size-5" /> Boulevard Agua Caliente C 11999, Hipodromo, Tijuana, B.C. </li> -->
             </ul>
           </div>
         </div>

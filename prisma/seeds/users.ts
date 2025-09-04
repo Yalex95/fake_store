@@ -8,7 +8,7 @@ async function main() {
   // for (let i = 0; i < 5; i++) {
     await prisma.users.create({
       data: {
-        name: faker.person.fullName(),
+        name: 'admin',
         username: faker.internet.username(),
         password: bcrypt.hashSync('123456'),
         isActive: true,
@@ -23,7 +23,7 @@ async function main() {
 }
 main()
   .then(() => {
-    console.log("✅ Fake users inserted.");
+    console.log("✅ Fake user inserted.");
     return prisma.$disconnect();
   })
   .catch(async () => {

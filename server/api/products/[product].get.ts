@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
     let decimals = finalPrice.toFixed(2)
     return parseFloat(decimals);
   }
-
+if(!productDetails) return [];
   const { variants,...rest } = productDetails.product;
   const { price,percentageOff} = productDetails;
   productDetails.product = {

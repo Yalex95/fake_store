@@ -1,7 +1,7 @@
 <template>
   <div class="mt-3 flex flex-col gap-3 ">
     <p class="text-base font-bold">{{ filterName }}</p>
-  <UCheckboxGroup v-model="selected" :items="items" />
+  <!-- <UCheckboxGroup v-model="selected" :items="items" /> -->
   </div>
   
 </template>

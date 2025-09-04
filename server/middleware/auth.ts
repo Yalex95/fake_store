@@ -6,7 +6,6 @@ export default defineEventHandler((event) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!)
-    
     event.context.user = decoded
   } catch {
     deleteCookie(event, 'auth_token')

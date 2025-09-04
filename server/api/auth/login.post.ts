@@ -15,7 +15,7 @@ export default defineEventHandler(async (event)=>{
 
   }
 
-  const valid = await bcrypt.compare(body.password,user.password)
+  const valid =  bcrypt.compare(body.password,user.password)
   if(!valid){
     throw createError({statusCode: 401, statusMessage:'Invalid password'})
   }
