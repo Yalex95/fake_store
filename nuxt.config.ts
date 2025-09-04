@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: [ ["@prisma/nuxt", { client: false }]],
+  modules: ['@nuxtjs/tailwindcss', ["@prisma/nuxt", { client: false }], "nuxt-headlessui", "@nuxt/icon"],
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
  
 
