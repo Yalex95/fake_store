@@ -1,20 +1,35 @@
-# Base
-ARG NODE_VERSION=20.19.0
-FROM node:${NODE_VERSION}-bullseye
+# # Base
+# ARG NODE_VERSION=20.19.0
+# FROM node:${NODE_VERSION}-bullseye
+
+# WORKDIR /app
+
+# # Copia solo package.json y package-lock para instalar deps
+# COPY package*.json ./
+
+# RUN npm install
+
+# # Copia Prisma Client
+# COPY prisma ./prisma
+# RUN npx prisma generate
+
+# # Expone puerto Nuxt dev
+# EXPOSE 3000
+
+# # CMD para desarrollo
+# CMD ["npm", "run", "dev"]
+FROM node:20.19.0-slim
+
+RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /app
 
-# Copia solo package.json y package-lock para instalar deps
 COPY package*.json ./
-
 RUN npm install
 
-# Copia Prisma Client
-COPY prisma ./prisma
+COPY . .
+
 RUN npx prisma generate
+# RUN npm run build
 
-# Expone puerto Nuxt dev
-EXPOSE 3000
-
-# CMD para desarrollo
 CMD ["npm", "run", "dev"]

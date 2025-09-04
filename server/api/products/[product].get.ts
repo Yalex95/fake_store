@@ -1,7 +1,7 @@
 import prisma from "~~/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { getQuery } from "h3";
-import { select } from "#build/ui";
+// import { select } from "#build/ui";
 export default defineEventHandler(async (event) => {
   const productId = getRouterParam(event, "product");
   const productDetails = await prisma.variants.findUnique({

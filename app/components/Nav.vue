@@ -34,9 +34,9 @@ const items = ref<NavigationMenuItem[]>([
       <img src="/images/logos/logo_shop_inline.webp" alt="Online Shop Logo" class="h-20" />
     </div>
     <div class="flex justify-between items-center w-full">
-      <UNavigationMenu :items="items" class="w-full justify-center " color="neutral" variant="link" content-orientation="vertical"/>
+      <!-- <UNavigationMenu :items="items" class="w-full justify-center " color="neutral" variant="link" content-orientation="vertical"/> -->
       <!-- <UButton icon="material-symbols-light:shopping-bag-sharp" size="md" color="primary" variant="solid"></UButton> -->
-      <UButton icon="material-symbols-light:login" size="md" color="neutral" class="bg-amber-500" variant="solid">Login</UButton>
+      <NuxtLink to="/login" icon="material-symbols-light:login" size="md" color="neutral" class="bg-amber-500" variant="solid">Login</NuxtLink>
     </div>
   </div>
 </template>

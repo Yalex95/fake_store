@@ -1,14 +1,15 @@
 
 
 services:
-  app:
+  nuxt:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: node:20.19.0-bullseye
+    image: node:20.19.0-slim
     command: npm run dev 
     environment:
-        HOST: 0.0.0.0
+        # HOST: 0.0.0.0
+        - NODE_ENV=development
     volumes:
         - ./:/app
         - /app/node_modules  
