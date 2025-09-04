@@ -15,7 +15,7 @@ export default defineEventHandler(async (event)=>{
 
   }
 
-  const valid =  bcrypt.compare(body.password,user.password)
+  const valid = await bcrypt.compare(body.password,user.password)
   if(!valid){
     throw createError({statusCode: 401, statusMessage:'Invalid password'})
   }
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event)=>{
 //save on cookie
     setCookie(event, 'auth_token', token, {
     httpOnly: true,
-    secure: true,//process.env.NODE_ENV === 'production',
+    secure: false,//process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7

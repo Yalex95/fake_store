@@ -52,25 +52,25 @@
   </NuxtLayout>
 </template>
 <script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "~/store/auth";
 
-const { login } = useAuth();
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
-const error = ref<string | null>(null)
+const email = ref("");
+const password = ref("");
+const error = ref("");
+
+const auth = useAuthStore();
+const router = useRouter();
 
 const handleLogin = async () => {
-  loading.value = true
-  error.value = null
+  error.value = "";
   try {
-    console.log(email.value)
-    await login({ email: email.value, password: password.value })
-    // redirigir al dashboard o home
-    await navigateTo('/')
+    await auth.login(email.value, password.value);
+    // Redirige a la página protegida
+    router.push("/");
   } catch (err: any) {
-    error.value = err?.statusMessage || 'Login failed'
-  } finally {
-    loading.value = false
+    error.value = err.message || "Login failed";
   }
-}
+};
 </script>

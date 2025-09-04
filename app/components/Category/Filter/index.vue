@@ -23,7 +23,6 @@ interface Category {
 const categories = ref<string[]>([]);
 const selectedCategories = ref<string[]>([]);
 const {data: categoriesData,status,pending,error} = await useFetch<Category[]>(`/api/categories`)
-// console.log(categoriesData)
 if (categoriesData.value) {
   categories.value = categoriesData.value.map(cat => cat.name);
 }
