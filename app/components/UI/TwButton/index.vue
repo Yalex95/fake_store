@@ -1,11 +1,10 @@
 <template>
-
   <button
     :id="buttonId"
     type="button"
     :class="[
       { 'rounded-full': rounded },
-      'tw-button',
+      'tw-button flex justify-center items-center',
       buttonClass,
       'variant-' + variant,
     ]"
@@ -16,9 +15,9 @@
     <slot name="button-icon-left" v-if="!loading"></slot>
     <slot name="button-img" v-if="!loading"></slot>
     <span v-if="buttonText" :class="buttonTextClass">{{ buttonText }}</span>
-    <span  v-if="loading" class="loader">
-     
-    </span>
+    
+      <UILoading v-if="loading" loadingClass="ml-3 w-5 h-5" loadingColor="#fff"/>
+    
     <slot name="button-icon-right" v-if="!loading"></slot>
   </button>
 </template>
@@ -26,49 +25,17 @@
 <script setup>
 import "@/assets/css/button.css";
 
-const props = defineProps({
-  
-  buttonId:{
-    type: Number,
-    default:0
-  },
-  buttonClass:{
-    type: String,
-    default:""
-  },
-  rounded:{
-    type: Boolean,
-    default: false
-  },
-  buttonTextClass:{
-    type: String,
-    default:""
-  },
-  buttonText:{
-    type: String,
-    default: ""
-  },
-  buttonDisabled:{
-    type: Boolean,
-    default: false
-  },
-  isVariant:{
-    type: Boolean,
-    default: false
-  },
-  variant:{
-    type: String,
-    default: ""
-  },
-  loading:{
-    type: Boolean,
-    default: false
-  },
-  loadingText:{
-    type: String,
-    default:""
-  },
-});
+const props = defineProps([
+  "buttonId",
+  "buttonClass",
+  "rounded",
+  "buttonTextClass",
+  "buttonText",
+  "buttonDisabled",
+  "isVariant",
+  "variant",
+  "loading"
+]);
 
 const emit = defineEmits(["on-button-click"]);
 

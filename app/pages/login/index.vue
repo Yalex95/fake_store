@@ -1,12 +1,4 @@
 <template>
-  <!--
-    This example requires updating your template:
-
-    ```
-    <html class="h-full bg-gray-900">
-    <body class="h-full">
-    ```
-  -->
   <NuxtLayout>
     <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -45,7 +37,11 @@
           <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold  hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Sign in</button>
         </div>
       </form>
-
+ <p class="mt-10 text-center text-sm/6 text-gray-400">
+        Not a member?
+        {{ ' ' }}
+        <a href="/register" class="font-semibold text-indigo-400 hover:text-indigo-300">Register here!</a>
+      </p>
     
     </div>
   </div>
