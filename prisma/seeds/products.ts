@@ -7,10 +7,10 @@ async function main() {
   await prisma.products.create({
     data: {
       brand:{
-        connect:{id:'48b68b0a-8994-41f6-9945-ccdfeb213f0b'}
+        connect:{id:'9e31a30e-cb8a-4040-a964-fc00a180964f'}
       },
       category: {
-        connect:{id:'c9b0bce8-cfbc-415b-a6c3-d6da01fc379c'}
+        connect:{id:'ea632b7a-e8af-4866-b487-d9d8c3f89e9b'}
       },
       title: faker.commerce.productName(),
       description: faker.commerce.productDescription(),

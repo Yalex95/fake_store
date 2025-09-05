@@ -25,7 +25,7 @@ export const useCartStore = defineStore("cart", {
       
     },
   },
-  persist: true,//dentro del objeto
+  persist: true,
 });
 
 

@@ -55,11 +55,11 @@
     </a>
     <div class="flex gap-3 border-gray-200 pt-3 border-t-2 ">
 
-      <UButton size="lg"
+      <button size="lg"
         class="w-2/3 flex text-center justify-center bg-[#134197] hover:bg-green-700  font-bold rounded-md">Buy
-      </UButton>
-      <UButton icon="qlementine-icons:add-to-cart-16" size="lg"
-        class="w-1/3 flex text-center justify-center bg-[#134197] hover:bg-green-700 font-bold rounded-md"></UButton>
+      </button>
+      <button icon="qlementine-icons:add-to-cart-16" size="lg"
+        class="w-1/3 flex text-center justify-center bg-[#134197] hover:bg-green-700 font-bold rounded-md"></button>
     </div>
   </div>
 </template>
