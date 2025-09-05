@@ -7,12 +7,7 @@ export default defineNuxtConfig({
     ["@prisma/nuxt", { client: false }],
     "nuxt-headlessui",
     "@nuxt/icon",
-    [
       "@pinia/nuxt",
-      {
-        autoImports: ["defineStore"],
-      },
-    ],
     'pinia-plugin-persistedstate/nuxt',
   ],
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],

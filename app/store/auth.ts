@@ -1,20 +1,20 @@
-import { defineStore } from "pinia";
-
+// import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
 interface User {
   id: string;
   email: string;
 }
 
+/**
+ * You can think of state as the data of the store, getters as the computed properties of the store, and actions as the methods.
+ */
 export const useAuthStore = defineStore("auth", {
-  /**
-   * You can think of state as the data of the store, getters as the computed properties of the store, and actions as the methods.
-   */
   state: () => ({
     user: null as User | null,
     isLoggedIn: false,
   }),
-  persist: true,
+  // persist: true,
   getters: {},
   actions: {
     //methods
@@ -49,5 +49,5 @@ export const useAuthStore = defineStore("auth", {
       this.user=null;
       this.isLoggedIn=false;
     }
-  },
+  },persist: true,
 });
