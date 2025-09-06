@@ -52,7 +52,7 @@
       <a
         v-if="initialType == 'password' && showPassword" href="#"
         :class="[
-          'tw-input-password-icon p-4 text-dark-blue-600 hover-text-dark-blue-900',
+          'tw-input-password-icon  text-dark-blue-600 hover-text-dark-blue-900',
           !inputDisabled ? 'cursor-pointer' : 'cursor-default bg-disabled',
           inputPasswordClass,
         ]"
