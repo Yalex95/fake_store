@@ -8,7 +8,7 @@
       buttonClass,
       'variant-' + variant,
     ]"
-    :disabled="buttonDisabled"
+    :disabled="loading"
     @click="handleClick"
   >
 
@@ -31,7 +31,6 @@ const props = defineProps([
   "rounded",
   "buttonTextClass",
   "buttonText",
-  "buttonDisabled",
   "isVariant",
   "variant",
   "loading"

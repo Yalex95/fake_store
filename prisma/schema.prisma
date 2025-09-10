@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
   // output   = "../app/generated/prisma"
 }
@@ -9,111 +9,220 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id        String      @id @default(uuid()) @db.Uuid
-  name      String?     @db.VarChar(255)
-  username  String?     @db.VarChar(255)
-  password  String?     @db.VarChar(255)
-  isActive  Boolean     @default(true)
-  role      String?     @default("user") @db.VarChar(255) // user, admin, etc.
-  email     String?     @db.VarChar(255)
-  avatar    String?
+enum Role {
+  USER
+  ADMIN
+}
 
-  deletedAt DateTime?   @db.Timestamp(6)
-  createdAt DateTime    @default(now()) @db.Timestamp(6)
-  updatedAt DateTime    @updatedAt @db.Timestamp(6)
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum ShipmentStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
+}
+
+// -------- USERS --------
+model users {
+  id       String  @id @default(uuid()) @db.Uuid
+  name     String? @db.VarChar(255)
+  username String? @unique @db.VarChar(255)
+  password String? @db.VarChar(255)
+  isActive Boolean @default(true)
+  role     Role    @default(USER) // user, admin, etc.
+  email    String? @unique @db.VarChar(255)
+  avatar   String?
+
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
 
   orders    orders[]
   addresses addresses[]
   reviews   reviews[]
   wishlists wishlists[]
-
-  @@unique([email])
+  carts     carts[]
 }
 
+// -------- CATEGORIES --------
+model categories {
+  id       String       @id @default(uuid()) @db.Uuid
+  name     String?      @unique @db.VarChar(255)
+  slug     String       @unique
+  parentId String?
+  parent   categories?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children categories[] @relation("CategoryHierarchy")
+
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+
+  product_categories product_categories[]
+}
+
+// -------- PRODUCT CAT --------
+model product_categories {
+  id         String @id @default(uuid())
+  productId  String
+  categoryId String
+
+  product  products   @relation(fields: [productId], references: [id])
+  category categories @relation(fields: [categoryId], references: [id])
+
+  @@unique([productId, categoryId])
+}
+
+// -------- PRODUCT ATTRIBUTES --------
+
+model product_attributes {
+  id        String @id @default(uuid())
+  productId String
+  key       String // Ej: "gender", "sport", "type", "color"
+  value     String // Ej: "hombre", "futbol", "calzado", "negro"
+
+  product products @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// -------- PRODUCTS --------
 model products {
-  id          String     @id @default(uuid()) @db.Uuid
-  brandId     String     @db.Uuid
-  brand       brands     @relation(fields: [brandId], references: [id])
-  categoryId  String     @db.Uuid
-  category    categories @relation(fields: [categoryId], references: [id])
+  id String @id @default(uuid()) @db.Uuid
 
-  title       String?    @db.VarChar(255)
-  description String?    @db.Text
+  name        String  @db.VarChar(255)
+  description String? @db.Text
   rating      Float?
+  slug        String  @unique
 
-  createdAt   DateTime   @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime   @updatedAt @db.Timestamp(6)
-  deletedAt   DateTime?  @db.Timestamp(6)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
 
-  reviews   reviews[]
-  wishlists wishlists[]
-  variants  variants[]
+  reviews            reviews[]
+  wishlists          wishlists[]
+  variants           variants[]
+  links              product_link_list[]
+  product_categories product_categories[]
+  attributes         product_attributes[]
 }
 
+// -------- PRODUCT LINK LIST (product variants) --------
+model product_link_list {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @db.Uuid
+  product   products @relation(fields: [productId], references: [id])
+
+  type     String? @db.VarChar(100) //type color-variation?
+  name     String? @db.VarChar(255)
+  url      String? @db.VarChar(500)
+  image    String? @db.VarChar(500)
+  altImage String? @db.VarChar(500)
+
+  // badgeStyle String?  @db.VarChar(100)
+  // badgeText  String?  @db.VarChar(255)
+
+  searchColor  String? @db.VarChar(100)
+  defaultColor String? @db.VarChar(255)
+
+  // source     String?  @db.VarChar(100)
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+}
+
+//size variants of product
+// -------- VARIANTS(size variants of a product) --------
 model variants {
   id        String   @id @default(uuid()) @db.Uuid
   productId String   @db.Uuid
   product   products @relation(fields: [productId], references: [id])
 
-  sku       String   @unique @db.VarChar(255)// Brand-category-model-color-size/variant
-  color     String?  @db.VarChar(100)
-  size      String?  @db.VarChar(255)
-  price     Float?
-  image_url String?  @db.VarChar(255)
-  stock     Int?     @default(0)
-  percentageOff  Float?   @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
-  deletedAt DateTime? @db.Timestamp(6)
+  sku           String  @unique @db.VarChar(255) // Brand-category-model-color-size/variant
+  size          String? @db.VarChar(50)
+  standardPrice Float?
+  salePrice     Float?
+  image_url     String? @db.VarChar(255)
+  stock         Int?    @default(0)
+  color         String? @db.VarChar(100)
 
-  order_items    order_items[]
-  product_images product_images[]
+  createdAt   DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime      @updatedAt @db.Timestamp(6)
+  
+  order_items order_items[]
+  view_list   view_list[]
+  cart_items  cart_items[]
 }
 
-model brands {
-  id       String     @id @default(uuid()) @db.Uuid
-  name     String     @unique @db.VarChar(255)
-  logo     String?    @db.VarChar(255)
-  products products[]
-}
-
-model product_images {
+// -------- VIEW LIST() --------
+model view_list {
   id        String   @id @default(uuid()) @db.Uuid
   variantId String   @db.Uuid
-  variant  variants @relation(fields: [variantId], references: [id])
-  image_url String?  @db.VarChar(255)
+  variant   variants @relation(fields: [variantId], references: [id])
+
+  image_url String? @db.VarChar(500)
 
   @@unique([variantId, image_url])
 }
 
-model categories {
-  id        String     @id @default(uuid()) @db.Uuid
-  name      String?    @unique @db.VarChar(255)
-  image     String?    @db.VarChar(255)
-  createdAt DateTime   @default(now()) @db.Timestamp(6)
-  updatedAt DateTime   @updatedAt @db.Timestamp(6)
-  deletedAt DateTime?  @db.Timestamp(6)
-  products  products[]
+// -------- CART --------
+model carts {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   users  @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart_items cart_items[]
 }
 
+// -------- CART ITEMS --------
+model cart_items {
+  id        String   @id @default(uuid()) @db.Uuid
+  cartId    String   @db.Uuid
+  cart      carts    @relation(fields: [cartId], references: [id])
+  variantId String   @db.Uuid
+  variant   variants @relation(fields: [variantId], references: [id])
+
+  quantity Int @default(1)
+  // price 
+}
+
+// -------- ORDERS --------
 model orders {
-  id               String        @id @default(uuid()) @db.Uuid
-  userId           String        @db.Uuid
-  user             users         @relation(fields: [userId], references: [id])
-  
-  total_amount     Float?
-  status           String?       @db.VarChar(255)
-  shipping_address String?       @db.VarChar(255)
-  billing_address  String?       @db.VarChar(255)
-  
-  createdAt        DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt        DateTime      @updatedAt @db.Timestamp(6)
-  deletedAt        DateTime?     @db.Timestamp(6)
-  //add payment details
-  order_items      order_items[]
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   users  @relation(fields: [userId], references: [id])
+
+  totalAmount     Float?
+  status          OrderStatus @default(PENDING)
+  shippingAddress String?
+  billingAddress  String?
+
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+
+  order_items order_items[]
+  shipments   shipments[]
+  payments    payments[]
+
+  @@index([userId])
 }
 
+// -------- ORDER ITEMS --------
 model order_items {
   id        String   @id @default(uuid()) @db.Uuid
   orderId   String   @db.Uuid
@@ -121,53 +230,93 @@ model order_items {
   variantId String   @db.Uuid
   variant   variants @relation(fields: [variantId], references: [id])
 
-  quantity  Int?     @default(0)
-  price     Float?
+  quantity Int    @default(0)
+  price    Float?
+
+  @@index([orderId, variantId])
 }
 
+// -------- PAYMENTS --------
+model payments {
+  id      String @id @default(uuid()) @db.Uuid
+  orderId String @db.Uuid
+  order   orders @relation(fields: [orderId], references: [id])
+
+  provider      String?       @db.VarChar(100) // Ej. Stripe, PayPal
+  status        PaymentStatus @default(PENDING)
+  amount        Float?
+  transactionId String?       @db.VarChar(255)
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+}
+
+// -------- SHIPMENTS --------
+model shipments {
+  id      String @id @default(uuid()) @db.Uuid
+  orderId String @db.Uuid
+  order   orders @relation(fields: [orderId], references: [id])
+
+  courier  String?        @db.VarChar(100) // DHL, FedEx
+  tracking String?        @db.VarChar(255)
+  status   ShipmentStatus @default(PENDING)
+
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamp(6)
+  deliveredAt DateTime?
+}
+
+// -------- USER ADDRESSES --------
 model addresses {
-  id         String  @id @default(uuid()) @db.Uuid
-  userId     String  @db.Uuid
-  user       users   @relation(fields: [userId], references: [id])
-  fullname   String? @db.VarChar(255)
-  street     String? @db.VarChar(255)
-  city       String? @db.VarChar(255)
-  state      String? @db.VarChar(255)
-  country    String? @db.VarChar(255)
-  zipCode    String? @db.VarChar(255)
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user   users  @relation(fields: [userId], references: [id])
+
+  fullname String? @db.VarChar(255)
+  street   String? @db.VarChar(255)
+  city     String? @db.VarChar(255)
+  state    String? @db.VarChar(255)
+  country  String? @db.VarChar(255)
+  zipCode  String? @db.VarChar(255)
+
   is_default Boolean @default(false)
+
+  @@index([userId])
 }
 
+// --------PRODUCT REVIEWS --------
 model reviews {
-  id        String    @id @default(uuid()) @db.Uuid
-  userId    String    @db.Uuid
-  user      users     @relation(fields: [userId], references: [id])
-  productId String    @db.Uuid
-  product   products  @relation(fields: [productId], references: [id])
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  user      users    @relation(fields: [userId], references: [id])
+  productId String   @db.Uuid
+  product   products @relation(fields: [productId], references: [id])
 
-  rating    Int?      @default(0)
-  comment   String?   @db.Text
+  rating  Int?    @default(0)
+  comment String? @db.Text
 
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
 
   @@unique([userId, productId]) // Ensure a user can only review a product once
+  @@index([productId])
 }
 
+// -------- WHISH LISTS --------
 model wishlists {
-  id        String    @id @default(uuid()) @db.Uuid
-
-  userId    String    @db.Uuid
-  user      users     @relation(fields: [userId], references: [id])
-  productId String    @db.Uuid
-  product   products  @relation(fields: [productId], references: [id])
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  user      users    @relation(fields: [userId], references: [id])
+  productId String   @db.Uuid
+  product   products @relation(fields: [productId], references: [id])
 
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
 
   @@unique([userId, productId]) // Ensure a user can only have one wishlist entry per product
+  @@index([userId, productId])
 }
 
-//TODO: add cupons , cupons_redemptions
+//NOTE: use cookie or session variables for users that dont sign in and save cart data to database when user logs in

@@ -1,13 +1,14 @@
 <template>
   <div v-for="product in products" :key="product.id"
     class="  border-2 border-solid rounded-xl border-gray-200  px-5 pt-5 pb-3">
-    <a v-if="product?.id" :href="`/product/${product?.defaultVariant?.id}`" class=" cursor-pointer">
+    <ClientOnly>
+      <a v-if="product?.id" :href="`/product/${product?.defaultVariant?.id}`" class=" cursor-pointer">
       <!-- image and favorite icon -->
       <div class="rounded-xl  lg:aspect-auto lg:h-56 text-center container flex items-center overflow-hidden relative">
         <!-- favorite -->
         <NuxtLink as="button" class="group absolute top-1 right-1 cursor-pointer ">
-          <!-- <UIcon name="material-symbols:favorite-outline" class="size-8 group-hover:hidden block" />
-          <UIcon name="material-symbols:favorite" class="size-8 group-hover:block hidden text-red-500" /> -->
+          <Icon name="material-symbols:favorite-outline" class="size-8 group-hover:hidden block" />
+          <Icon name="material-symbols:favorite" class="size-8 group-hover:block hidden text-red-500" />
         </NuxtLink>
         <!-- image -->
         <img :src="product?.defaultVariant?.image_url || '/images/no_image.png'" :alt="product.title"
@@ -45,21 +46,33 @@
             </p>
           </div>
           <div v-if="product?.defaultVariant?.percentageOff"
-            class="bg-red-500 flex gap-1 items-center text-white rounded-full px-2 py-1 text-xs w-1/3 h-8 justify-center ">
-            <!-- <UIcon name="ic:round-discount" class="size-3 hover:hidden block" /> -->
+            class="bg-red-500 flex gap-1 items-center text-white rounded-full px-2 py-1 text-sm font-semibold w-fit h-8 justify-center ">
+            <Icon name="ic:round-discount" class="size-4 hover:hidden block" />
             - {{ product?.defaultVariant?.percentageOff }}%
           </div>
         </div>
 
       </div>
     </a>
+    </ClientOnly>
     <div class="flex gap-3 border-gray-200 pt-3 border-t-2 ">
 
-      <button size="lg"
-        class="w-2/3 flex text-center justify-center bg-[#134197] hover:bg-green-700  font-bold rounded-md">Buy
-      </button>
-      <button icon="qlementine-icons:add-to-cart-16" size="lg"
-        class="w-1/3 flex text-center justify-center bg-[#134197] hover:bg-green-700 font-bold rounded-md"></button>
+      <NuxtLink to="#" 
+        class="w-full flex text-white text-center justify-center bg-[#134197] hover:bg-green-700  font-bold rounded-md py-2 text-lg uppercase">Buy
+      </NuxtLink>
+      <UITwButton 
+      @on-button-click=""
+      button-id="add-cart"
+      buttonClass="justify-center w-1/3 flex bg-[#134197] hover:bg-green-700  rounded-md"
+      buttonTextClass="text-center font-bold"
+      buttonText=""
+      :isVariant="true"
+      variant="light-blue"
+      :loading="false">
+    <template v-slot:button-icon-right>
+      <Icon  name="material-symbols:shopping-cart-outline" class="w-8 h-10 "/>
+    </template>
+    </UITwButton>
     </div>
   </div>
 </template>
@@ -86,7 +99,7 @@ interface Product {
   title: string;
   defaultVariant?:Variant; 
   rating: number;
-  // availableColors: Colors;
+  availableColors: Colors;
 }
 
  const router = useRouter();
