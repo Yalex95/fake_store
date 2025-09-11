@@ -5,21 +5,19 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // for (let i = 0; i < 5; i++) {
     await prisma.users.create({
       data: {
-        name: 'admin',
-        username: faker.internet.username(),
+        name: 'user',
+        username: "user123",
         password: bcrypt.hashSync('123456'),
         isActive: true,
-        role: "user",
+        role: "USER",
         email: faker.internet.email(),
         avatar: faker.image.avatar(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     });
-  // }
 }
 main()
   .then(() => {

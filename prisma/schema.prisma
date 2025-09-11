@@ -20,6 +20,7 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+  RETURNED
 }
 
 enum PaymentStatus {
@@ -36,175 +37,152 @@ enum ShipmentStatus {
   RETURNED
 }
 
-// -------- USERS --------
-model users {
+// -------- USER --------
+model user {
   id       String  @id @default(uuid()) @db.Uuid
-  name     String? @db.VarChar(255)
-  username String? @unique @db.VarChar(255)
-  password String? @db.VarChar(255)
+  name     String @db.VarChar(255)
+  username String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
   isActive Boolean @default(true)
   role     Role    @default(USER) // user, admin, etc.
-  email    String? @unique @db.VarChar(255)
+  email    String @unique @db.VarChar(255)
   avatar   String?
 
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
 
-  orders    orders[]
-  addresses addresses[]
-  reviews   reviews[]
-  wishlists wishlists[]
-  carts     carts[]
+  order    order[]    @relation("UserToOrder")
+  address  address[]  @relation("UserToAddress")
+  review   review[]   @relation("UserToReview")
+  wishlist wishlist[] @relation("UserToWishlist")
+  cart     cart[]     @relation("UserToCart")
 }
 
-// -------- CATEGORIES --------
-model categories {
-  id       String       @id @default(uuid()) @db.Uuid
-  name     String?      @unique @db.VarChar(255)
-  slug     String       @unique
-  parentId String?
-  parent   categories?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children categories[] @relation("CategoryHierarchy")
+// -------- CATEGORY --------
+model category {
+  id       String     @id @default(uuid()) @db.Uuid
+  name     String?    @db.VarChar(255)
+  slug     String     @unique @db.VarChar(255)
+  parentId String?    @db.Uuid
+  parent   category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children category[] @relation("CategoryHierarchy")
 
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
 
-  product_categories product_categories[]
+  product_categories product_categories[] @relation("CategoryToProduct")
 }
 
 // -------- PRODUCT CAT --------
 model product_categories {
-  id         String @id @default(uuid())
-  productId  String
-  categoryId String
+  id         String @id @default(uuid()) @db.Uuid
+  productId  String @db.Uuid
+  categoryId String @db.Uuid
 
-  product  products   @relation(fields: [productId], references: [id])
-  category categories @relation(fields: [categoryId], references: [id])
+  product  product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category category @relation("CategoryToProduct", fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([productId, categoryId])
 }
 
-// -------- PRODUCT ATTRIBUTES --------
-
-model product_attributes {
-  id        String @id @default(uuid())
-  productId String
-  key       String // Ej: "gender", "sport", "type", "color"
-  value     String // Ej: "hombre", "futbol", "calzado", "negro"
-
-  product products @relation(fields: [productId], references: [id], onDelete: Cascade)
-}
-
-// -------- PRODUCTS --------
-model products {
+// -------- PRODUCT --------
+model product {
   id String @id @default(uuid()) @db.Uuid
 
   name        String  @db.VarChar(255)
   description String? @db.Text
   rating      Float?
-  slug        String  @unique
+  slug        String  @unique @db.VarChar(255)
 
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
 
-  reviews            reviews[]
-  wishlists          wishlists[]
-  variants           variants[]
-  links              product_link_list[]
-  product_categories product_categories[]
-  attributes         product_attributes[]
+  review   review[]
+  wishlist wishlist[]
+  variants product_variants[]
+  category product_categories[]
 }
 
 // -------- PRODUCT LINK LIST (product variants) --------
-model product_link_list {
-  id        String   @id @default(uuid()) @db.Uuid
-  productId String   @db.Uuid
-  product   products @relation(fields: [productId], references: [id])
+model product_variants {
+  id        String  @id @default(uuid()) @db.Uuid
+  productId String  @db.Uuid
+  product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  type     String? @db.VarChar(100) //type color-variation?
-  name     String? @db.VarChar(255)
-  url      String? @db.VarChar(500)
-  image    String? @db.VarChar(500)
-  altImage String? @db.VarChar(500)
+  name          String? @db.VarChar(255)
+  url           String? @db.VarChar(500)
+  image         String? @db.VarChar(500)
+  altImage      String? @db.VarChar(500)
+  standardPrice Float?
+  salePrice     Float?
+  color         String? @db.VarChar(100)
+  isDefault     Boolean @default(false)
 
-  // badgeStyle String?  @db.VarChar(100)
-  // badgeText  String?  @db.VarChar(255)
+  createdAt DateTime        @default(now()) @db.Timestamp(6)
+  updatedAt DateTime        @updatedAt @db.Timestamp(6)
+  skus      variant_items[]
+}
 
-  searchColor  String? @db.VarChar(100)
-  defaultColor String? @db.VarChar(255)
+// -------- VARIANTS(size variants of a product) --------
+model variant_items {
+  id               String           @id @default(uuid()) @db.Uuid
+  productVariantId String           @db.Uuid
+  productVariant   product_variants @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
 
-  // source     String?  @db.VarChar(100)
+  sku   String  @unique @db.VarChar(255) // Brand-category-model-color-size/variant
+  size  String? @db.VarChar(50)
+  stock Int?    @default(0)
 
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
-}
 
-//size variants of product
-// -------- VARIANTS(size variants of a product) --------
-model variants {
-  id        String   @id @default(uuid()) @db.Uuid
-  productId String   @db.Uuid
-  product   products @relation(fields: [productId], references: [id])
-
-  sku           String  @unique @db.VarChar(255) // Brand-category-model-color-size/variant
-  size          String? @db.VarChar(50)
-  standardPrice Float?
-  salePrice     Float?
-  image_url     String? @db.VarChar(255)
-  stock         Int?    @default(0)
-  color         String? @db.VarChar(100)
-
-  createdAt   DateTime      @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime      @updatedAt @db.Timestamp(6)
-  
-  order_items order_items[]
-  view_list   view_list[]
-  cart_items  cart_items[]
+  order_item order_item[]
+  gallery    variant_images[]
+  cart_item  cart_item[]
 }
 
 // -------- VIEW LIST() --------
-model view_list {
-  id        String   @id @default(uuid()) @db.Uuid
-  variantId String   @db.Uuid
-  variant   variants @relation(fields: [variantId], references: [id])
+model variant_images {
+  id        String        @id @default(uuid()) @db.Uuid
+  variantId String        @db.Uuid
+  variant   variant_items @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
   image_url String? @db.VarChar(500)
 
   @@unique([variantId, image_url])
 }
 
-// -------- CART --------
-model carts {
+// -------- CART -------- Save only if user is logged in
+model cart {
   id     String @id @default(uuid()) @db.Uuid
   userId String @db.Uuid
-  user   users  @relation(fields: [userId], references: [id])
+  user   user   @relation("UserToCart", fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 
-  cart_items cart_items[]
+  cart_item cart_item[]
 }
 
 // -------- CART ITEMS --------
-model cart_items {
-  id        String   @id @default(uuid()) @db.Uuid
-  cartId    String   @db.Uuid
-  cart      carts    @relation(fields: [cartId], references: [id])
-  variantId String   @db.Uuid
-  variant   variants @relation(fields: [variantId], references: [id])
+model cart_item {
+  id        String        @id @default(uuid()) @db.Uuid
+  cartId    String        @db.Uuid
+  cart      cart          @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variantId String        @db.Uuid
+  variant   variant_items @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
   quantity Int @default(1)
-  // price 
 }
 
-// -------- ORDERS --------
-model orders {
+// -------- ORDER --------
+model order {
   id     String @id @default(uuid()) @db.Uuid
   userId String @db.Uuid
-  user   users  @relation(fields: [userId], references: [id])
+  user   user   @relation("UserToOrder", fields: [userId], references: [id], onDelete: Cascade)
 
   totalAmount     Float?
   status          OrderStatus @default(PENDING)
@@ -215,32 +193,32 @@ model orders {
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
 
-  order_items order_items[]
-  shipments   shipments[]
-  payments    payments[]
+  order_item order_item[]
+  shipment   shipment[]
+  payment    payment[]
 
   @@index([userId])
 }
 
 // -------- ORDER ITEMS --------
-model order_items {
-  id        String   @id @default(uuid()) @db.Uuid
-  orderId   String   @db.Uuid
-  order     orders   @relation(fields: [orderId], references: [id])
-  variantId String   @db.Uuid
-  variant   variants @relation(fields: [variantId], references: [id])
+model order_item {
+  id        String        @id @default(uuid()) @db.Uuid
+  orderId   String        @db.Uuid
+  order     order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId String        @db.Uuid
+  variant   variant_items @relation(fields: [variantId], references: [id])
 
-  quantity Int    @default(0)
-  price    Float?
+  quantity Int    @default(1)
+  price    Float
 
   @@index([orderId, variantId])
 }
 
-// -------- PAYMENTS --------
-model payments {
+// -------- PAYMENT --------
+model payment {
   id      String @id @default(uuid()) @db.Uuid
   orderId String @db.Uuid
-  order   orders @relation(fields: [orderId], references: [id])
+  order   order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   provider      String?       @db.VarChar(100) // Ej. Stripe, PayPal
   status        PaymentStatus @default(PENDING)
@@ -251,26 +229,26 @@ model payments {
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 }
 
-// -------- SHIPMENTS --------
-model shipments {
+// -------- SHIPMENT --------
+model shipment {
   id      String @id @default(uuid()) @db.Uuid
   orderId String @db.Uuid
-  order   orders @relation(fields: [orderId], references: [id])
+  order   order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  courier  String?        @db.VarChar(100) // DHL, FedEx
-  tracking String?        @db.VarChar(255)
-  status   ShipmentStatus @default(PENDING)
-
-  createdAt   DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamp(6)
+  courier     String?        @db.VarChar(100) // DHL, FedEx
+  tracking    String?        @db.VarChar(255)
+  status      ShipmentStatus @default(PENDING)
   deliveredAt DateTime?
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 }
 
-// -------- USER ADDRESSES --------
-model addresses {
+// -------- USER ADDRESS --------
+model address {
   id     String @id @default(uuid()) @db.Uuid
   userId String @db.Uuid
-  user   users  @relation(fields: [userId], references: [id])
+  user   user   @relation("UserToAddress", fields: [userId], references: [id], onDelete: Cascade)
 
   fullname String? @db.VarChar(255)
   street   String? @db.VarChar(255)
@@ -279,20 +257,20 @@ model addresses {
   country  String? @db.VarChar(255)
   zipCode  String? @db.VarChar(255)
 
-  is_default Boolean @default(false)
+  isDefault Boolean @default(false)
 
   @@index([userId])
 }
 
-// --------PRODUCT REVIEWS --------
-model reviews {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  user      users    @relation(fields: [userId], references: [id])
-  productId String   @db.Uuid
-  product   products @relation(fields: [productId], references: [id])
+// --------PRODUCT REVIEW --------
+model review {
+  id        String  @id @default(uuid()) @db.Uuid
+  userId    String  @db.Uuid
+  user      user    @relation("UserToReview", fields: [userId], references: [id], onDelete: Cascade)
+  productId String  @db.Uuid
+  product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  rating  Int?    @default(0)
+  rating  Float?    @default(0)
   comment String? @db.Text
 
   createdAt DateTime  @default(now()) @db.Timestamp(6)
@@ -303,13 +281,13 @@ model reviews {
   @@index([productId])
 }
 
-// -------- WHISH LISTS --------
-model wishlists {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  user      users    @relation(fields: [userId], references: [id])
-  productId String   @db.Uuid
-  product   products @relation(fields: [productId], references: [id])
+// -------- WISH LISTS --------
+model wishlist {
+  id        String  @id @default(uuid()) @db.Uuid
+  userId    String  @db.Uuid
+  user      user    @relation("UserToWishlist", fields: [userId], references: [id], onDelete: Cascade)
+  productId String  @db.Uuid
+  product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
@@ -319,4 +297,4 @@ model wishlists {
   @@index([userId, productId])
 }
 
-//NOTE: use cookie or session variables for users that dont sign in and save cart data to database when user logs in
+//NOTE: use cookie or session variables for user that dont sign in and save cart data to database when user logs in

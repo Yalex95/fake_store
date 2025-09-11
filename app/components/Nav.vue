@@ -131,7 +131,7 @@
                 </MenuItems>
               </transition>
             </Menu>
-            <NuxtLink
+            <!-- <NuxtLink
               to="/cart"
               class="relative ml-5 rounded-full p-1 text-gray-400 hover:text-blue-500"
             >
@@ -144,7 +144,7 @@
                 class="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
                 2
               </span>
-            </NuxtLink>
+            </NuxtLink> -->
           </ClientOnly>
         </div>
       </div>

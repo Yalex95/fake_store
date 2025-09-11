@@ -40,21 +40,22 @@ const category = ref(route.query.category || null)
 // const category = ref(route.query.category || null)
 
 // construimos la URL en base a los valores reactivos
-const url = computed(() => {
-  const params = new URLSearchParams({
-    page: page.value.toString(),
-    limit: props.limit.toString(),
-  })
-  if (category.value) {
-    params.append('category', category.value)
-  }
-  return `/api/products?${params.toString()}`
-})
+// const url = computed(() => {
+//   const params = new URLSearchParams({
+//     page: page.value.toString(),
+//     limit: props.limit.toString(),
+//   })
+//   if (category.value) {
+//     params.append('category', category.value)
+//   }
+//   return `/api/products?${params.toString()}`
+// })
 
 // fetch automático cada vez que cambie la URL
-const { data: productsList, status, pending, error } = await useLazyFetch(url, {
+const { data: productsList, status, pending, error } = await useFetch('/api/products', {
   immediate: true, // carga al inicio
 })
+console.log(productsList.value)
 // const query = computed(()=>({
 //     category: category.value,
 //     limit: props.limit,
