@@ -12,8 +12,8 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-// Datos de productos en inglés
-const productsData = [
+// Product data
+const productData = [
   {
     name: "Adidas SL 72 OG",
     description: "Classic Adidas sneakers with retro style and all-day comfort.",
@@ -21,7 +21,7 @@ const productsData = [
     gender: "Men",
     type: "Footwear",
     sport: "Casual",
-    variants: [
+    product_variants: [
       { color: "Black", sizes: ["38", "39", "40", "41", "42"], price: 109 },
       { color: "Purple", sizes: ["38", "39", "40", "41", "42"], price: 114 },
     ],
@@ -33,7 +33,7 @@ const productsData = [
     gender: "Men",
     type: "Footwear",
     sport: "Sport",
-    variants: [
+    product_variants: [
       { color: "White", sizes: ["40", "41", "42", "43"], price: 129 },
       { color: "Black", sizes: ["40", "41", "42", "43"], price: 129 },
     ],
@@ -42,17 +42,17 @@ const productsData = [
 
 async function main() {
   // Fetch existing categories from DB
-  const categories = await prisma.categories.findMany();
-  const categoriesMap: Record<string, any> = {};
+  const categories = await prisma.category.findMany();
+  const categoryMap: Record<string, any> = {};
   categories.forEach(cat => {
-    categoriesMap[cat.name.toLowerCase()] = cat;
+    categoryMap[cat.name.toLowerCase()] = cat;
   });
 
-  for (const prod of productsData) {
+  for (const prod of productData) {
     const slug = slugify(prod.name);
 
     // Create or update product
-    const product = await prisma.products.upsert({
+    const product = await prisma.product.upsert({
       where: { slug },
       update: {},
       create: {
@@ -64,75 +64,60 @@ async function main() {
     });
 
     // Assign categories that already exist
-    if (categoriesMap[prod.gender.toLowerCase()]) {
+    if (categoryMap[prod.gender.toLowerCase()]) {
       await prisma.product_categories.create({
         data: {
           productId: product.id,
-          categoryId: categoriesMap[prod.gender.toLowerCase()].id,
+          categoryId: categoryMap[prod.gender.toLowerCase()].id,
+        },
+      });
+    }
+    if (categoryMap[prod.type.toLowerCase()]) {
+      await prisma.product_categories.create({
+        data: {
+          productId: product.id,
+          categoryId: categoryMap[prod.type.toLowerCase()].id,
         },
       });
     }
 
-    if (categoriesMap[prod.type.toLowerCase()]) {
-      await prisma.product_categories.create({
+    // Create product_variants and nested variant_items
+    for (const variantData of prod.product_variants) {
+      // product_variant (ej. Black, Purple)
+      const variant = await prisma.product_variants.create({
         data: {
           productId: product.id,
-          categoryId: categoriesMap[prod.type.toLowerCase()].id,
+          color: variantData.color,
+          standardPrice: variantData.price,
+          salePrice: variantData.price,
+          image: `/images/product/${slug}-${variantData.color}-main.jpg`,
+          altImage: `/images/product/${slug}-${variantData.color}-alt.jpg`,
+          isDefault: false,
         },
       });
-    }
 
-    // Add attributes
-    await prisma.product_attributes.createMany({
-      data: [
-        { productId: product.id, key: "gender", value: prod.gender },
-        { productId: product.id, key: "type", value: prod.type },
-        { productId: product.id, key: "sport", value: prod.sport },
-      ],
-    });
-
-    // Create variants and product link list
-    for (const variantData of prod.variants) {
+      // Sizes → variant_items
       for (const size of variantData.sizes) {
         const sku = `${slug}-${variantData.color.toLowerCase()}-${size}`;
-        const variant = await prisma.variants.create({
+        const item = await prisma.variant_items.create({
           data: {
-            productId: product.id,
+            productVariantId: variant.id,
             sku,
             size,
-            color: variantData.color,
-            standardPrice: variantData.price,
-            salePrice: variantData.price,
             stock: 20,
-            image_url: `/images/products/${slug}-${variantData.color}-${size}.jpg`,
           },
         });
 
-        // Product link list per color
-        await prisma.product_link_list.create({
-          data: {
-            productId: product.id,
-            type: "color-variation",
-            name: `${prod.name} ${variantData.color}`,
-            url: `/products/${slug}-${variantData.color.toLowerCase()}`,
-            image: `/images/products/${slug}-${variantData.color}-main.jpg`,
-            altImage: `/images/products/${slug}-${variantData.color}-alt.jpg`,
-            searchColor: variantData.color,
-            defaultColor: variantData.color,
-            createdAt: new Date(),
-          },
-        });
-
-        // View list images
-        await prisma.view_list.createMany({
+        // Images por SKU → variant_images
+        await prisma.variant_images.createMany({
           data: [
             {
-              variantId: variant.id,
-              image_url: `/images/products/${slug}-${variantData.color}-${size}-1.jpg`,
+              variantId: item.id,
+              image_url: `/images/product/${slug}-${variantData.color}-${size}-1.jpg`,
             },
             {
-              variantId: variant.id,
-              image_url: `/images/products/${slug}-${variantData.color}-${size}-2.jpg`,
+              variantId: item.id,
+              image_url: `/images/product/${slug}-${variantData.color}-${size}-2.jpg`,
             },
           ],
         });
@@ -143,7 +128,7 @@ async function main() {
 
 main()
   .then(async () => {
-    console.log("✅ English products seed with existing categories completed.");
+    console.log("✅  product seed with existing categories completed.");
     await prisma.$disconnect();
   })
   .catch(async (e) => {

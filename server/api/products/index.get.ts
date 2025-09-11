@@ -36,14 +36,15 @@ export default defineEventHandler(async (event) => {
   // }
   //Get data and count products
   const [data, total] = await Promise.all([
-    await prisma.products.findMany({
+    await prisma.product.findMany({
       where:{
         deletedAt: null
       },
       include: {
-        links: true,
-        variants:true,
-        product_categories: {
+        variants:{
+          where: {isDefault: true}
+        },
+        category: {
           select:{
             category: {
               select:{
@@ -59,7 +60,7 @@ export default defineEventHandler(async (event) => {
       skip,
       take: limit,
     }),
-    prisma.products.count({ where:{deletedAt: null} }),
+    prisma.product.count({ where:{deletedAt: null} }),
   ]);
 console.log(data);
 
