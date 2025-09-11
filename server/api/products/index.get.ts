@@ -6,8 +6,8 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   //Sanitize and validate params
-  // const title = typeof query.title === "string" ? query.title : "";
-  // const category = typeof query.category === "string" ? query.category : null;
+  const name = typeof query.name === "string" ? query.name : "";
+  const category = typeof query.category === "string" ? query.category : null;
 
   //Pagination
   const page = parseInt(query.page as string) || 1;
@@ -15,31 +15,29 @@ export default defineEventHandler(async (event) => {
   const skip = (page - 1) * limit;
 
   //filter construction
-  // const where: Prisma.productsWhereInput = {
-  //   deletedAt: null,
-  // };
+  const where: Prisma.productsWhereInput = {
+    deletedAt: null,
+  };
 
-  // if (title) {
-  //   where.title = {
-  //     contains: title,
-  //     mode: "insensitive",
-  //   };
-  // }
+  if (name) {
+    where.name = {
+      contains: name,
+      mode: "insensitive",
+    };
+  }
 
-  // if (category) {
-  //   where.category = {
-  //     name: {
-  //       equals: category,
-  //       mode: "insensitive",
-  //     },
-  //   };
-  // }
+  if (category) {
+    where.category = {
+      name: {
+        equals: category,
+        mode: "insensitive",
+      },
+    };
+  }
   //Get data and count products
   const [data, total] = await Promise.all([
     await prisma.product.findMany({
-      where:{
-        deletedAt: null
-      },
+      where,
       include: {
         variants:{
           where: {isDefault: true}
@@ -60,9 +58,8 @@ export default defineEventHandler(async (event) => {
       skip,
       take: limit,
     }),
-    prisma.product.count({ where:{deletedAt: null} }),
+    prisma.product.count({where}),
   ]);
-console.log(data);
 
   //generate pagination meta
   const pages = Math.ceil(total / limit);
@@ -75,18 +72,18 @@ console.log(data);
   const next_page_url = page < pages ? `?page=${page + 1}` : null;
   const previous_page_url = page > 1 ? `?page=${page - 1}` : null;
   return {
-    data,total
-    // meta: {
-    //   current_page: page,
-    //   last_page,
-    //   first_page,
-    //   first_page_url,
-    //   last_page_url,
-    //   next_page_url,
-    //   previous_page_url,
-    //   limit,
-    //   total,
-    //   pages,
-    // },
+    data,
+    meta: {
+      current_page: page,
+      last_page,
+      first_page,
+      first_page_url,
+      last_page_url,
+      next_page_url,
+      previous_page_url,
+      limit,
+      total,
+      pages,
+    },
   };
 });

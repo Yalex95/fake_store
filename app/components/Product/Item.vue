@@ -91,15 +91,17 @@ interface Variant {
   sku: string;
   price: number;
 }
-interface Colors{
-  color: string;
+interface category{
+  name: string;
 }
 interface Product {
   id: string;
-  title: string;
-  defaultVariant?:Variant; 
-  rating: number;
-  availableColors: Colors;
+  name: string;
+  category: string,
+  description: string,
+  rating: string,
+  slug: string,
+  variants: string
 }
 
  const router = useRouter();
