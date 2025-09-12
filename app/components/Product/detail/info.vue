@@ -1,13 +1,13 @@
 <template>
   <div class=" flex flex-col gap-3">
-    <h1 class="text-3xl font-bold">{{ productInfo.product.title }}</h1>
+    <!-- <h1 class="text-3xl font-bold">{{ productInfo.product.title }}</h1>
         <span
           >{{ productInfo.product.rating }}
           <!-- <UIcon
             v-for="i in 5"
             :name="setStars(i, productInfo.product.rating)"
             class="size-4"/> -->
-      </span>
+      <!-- </span>  -->
       <span>SKU: {{ productInfo.sku }}</span>
         
         <div class="deal f">

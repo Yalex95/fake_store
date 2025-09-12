@@ -4,7 +4,7 @@
       <!-- Product Images -->
       <div class="flex w-1/2 gap-20 h-auto">
         <!-- images grid -->
-        <div
+        <!-- <div
           v-if="productDetails.product_images.length > 0"
           class="w-20 p-3 items-center overflow-y-scroll overflow-x-hidden flex flex-col gap-4"
         >
@@ -18,14 +18,14 @@
               class="object-contain"
             />
           </div>
-        </div>
+        </div> -->
         <!-- selected image -->
         <div class="w-full overflow-hidden  h-[400px] ">
           <img
             :src="
               productDetails.image_url || '/images/no_image.png'
             "
-            :alt="productDetails.title"
+            :alt="productDetails.name"
             class="w-[500px] h-[400px]  object-contain aspect-[1/1]"
           />
         </div>
@@ -35,10 +35,10 @@
         <ProductDetailInfo
           :product-info="productDetails"
         />
-        <ProductVariants
+        <!-- <ProductVariants
           :variants="productDetails.product.availableVariants"
           :selectedVariant="productDetails.id"
-        />
+        /> -->
       </div>
     </div>
   </div>

@@ -10,7 +10,7 @@
           <p>No products to show.</p>
         </div>
       </div>
-     <div v-if="productsList?.data.length > 0 && productsList?.data.length > limit" class="flex justify-center items center mt-5">
+     <div  class="flex justify-center items center mt-5">
        <!-- <UPagination v-model:page="page" 
        :items-per-page="limit"
         :total="productsList.meta.total"
@@ -55,7 +55,6 @@ const category = ref(route.query.category || null)
 const { data: productsList, status, pending, error } = await useFetch('/api/products', {
   immediate: true, // carga al inicio
 })
-console.log(productsList.value)
 // const query = computed(()=>({
 //     category: category.value,
 //     limit: props.limit,

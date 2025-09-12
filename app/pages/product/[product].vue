@@ -13,4 +13,5 @@ const route= useRoute();
 const productId = route.params.product;
 
 const {data: productDetails, status,error}=await useFetch(`/api/products/${productId}`)
+console.log(productDetails.value);
 </script>
