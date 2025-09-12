@@ -35,18 +35,28 @@ export default defineEventHandler(async (event) => {
     };
   }
   //Get data and count products
-  const [data, total] = await Promise.all([
+  const [rawData, total] = await Promise.all([
     await prisma.product.findMany({
       where,
       include: {
         variants:{
-          where: {isDefault: true}
+          where: {isDefault: true},
+          include:{
+            skus: true
+          }
         },
-        category: {
+        categories: {
           select:{
             category: {
               select:{
-                name:true
+            name:true,
+                slug:true,
+                parent:{
+                  select:{
+                    name: true, slug: true
+                  }
+                }
+
               }
             }
           }
@@ -60,7 +70,13 @@ export default defineEventHandler(async (event) => {
     }),
     prisma.product.count({where}),
   ]);
-
+  // console.log(rawData);
+const data = rawData.map((prod)=>{
+  let obj ={...prod, variant : prod.variants[0]||0}
+  // delete obj.variants;
+  return obj;
+})
+// delete data.variants;
   //generate pagination meta
   const pages = Math.ceil(total / limit);
   const first_page = 1;

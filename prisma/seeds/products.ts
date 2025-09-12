@@ -12,93 +12,96 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-// Product data
-const productData = [
-  {
-    name: "Adidas SL 72 OG",
-    description: "Classic Adidas sneakers with retro style and all-day comfort.",
-    rating: 4.5,
-    gender: "Men",
-    type: "Footwear",
-    sport: "Casual",
-    product_variants: [
-      { color: "Black", sizes: ["38", "39", "40", "41", "42"], price: 109 },
-      { color: "Purple", sizes: ["38", "39", "40", "41", "42"], price: 114 },
-    ],
-  },
-  {
-    name: "Nike Air Max 270",
-    description: "Nike athletic sneakers with great cushioning and modern design.",
-    rating: 4.8,
-    gender: "Men",
-    type: "Footwear",
-    sport: "Sport",
-    product_variants: [
-      { color: "White", sizes: ["40", "41", "42", "43"], price: 129 },
-      { color: "Black", sizes: ["40", "41", "42", "43"], price: 129 },
-    ],
-  },
-];
-
 async function main() {
-  // Fetch existing categories from DB
-  const categories = await prisma.category.findMany();
-  const categoryMap: Record<string, any> = {};
-  categories.forEach(cat => {
-    categoryMap[cat.name.toLowerCase()] = cat;
-  });
+  const products = [
+    {
+      name: "Adidas SL 72 OG",
+      description:
+        "Classic Adidas sneakers with retro style and all-day comfort.",
+      rating: 4.5,
+      categories: ["men", "men-footwear"], // slugs de categorías existentes
+      variants: [
+        { color: "Black", sizes: ["40", "41", "42"], price: 109 },
+        { color: "Purple", sizes: ["40", "41", "42"], price: 114 },
+      ],
+    },
+    {
+      name: "Nike Air Max 270",
+      description:
+        "Nike athletic sneakers with great cushioning and modern design.",
+      rating: 4.8,
+      categories: ["women", "women-footwear"],
+      variants: [
+        { color: "White", sizes: ["38", "39", "40", "41"], price: 129 },
+        { color: "Red", sizes: ["38", "39", "40", "41"], price: 129 },
+      ],
+    },
+  ];
 
-  for (const prod of productData) {
-    const slug = slugify(prod.name);
-
-    // Create or update product
-    const product = await prisma.product.upsert({
-      where: { slug },
-      update: {},
-      create: {
-        name: prod.name,
-        description: prod.description,
-        rating: prod.rating,
-        slug,
+  for (const p of products) {
+    const slug = slugify(p.name);
+    
+    // --- Crear producto ---
+    const product = await prisma.product.create({
+      data: {
+        name: p.name,
+        description: p.description,
+        rating: p.rating,
       },
     });
 
-    // Assign categories that already exist
-    if (categoryMap[prod.gender.toLowerCase()]) {
-      await prisma.product_categories.create({
-        data: {
-          productId: product.id,
-          categoryId: categoryMap[prod.gender.toLowerCase()].id,
+    // --- Vincular categorías existentes ---
+    const categories = await prisma.category.findMany({
+      where: {
+        slug: {
+          in: Array.isArray(p.categories) ? p.categories : [p.categories],
         },
-      });
-    }
-    if (categoryMap[prod.type.toLowerCase()]) {
-      await prisma.product_categories.create({
-        data: {
+      },
+    });
+   for (const cat of categories) {
+  await prisma.product_categories.create({
+    data: {
+      productId: product.id,
+      categoryId: cat.id,
+    },
+  });
+}
+    // --- Crear variantes ---
+    for (const v of p.variants) {
+      const variantSlug = `${slug}-${v.color.toLowerCase()}`;
+      const variant = await prisma.product_variants.upsert({
+        where: { slug: variantSlug },
+        update: {},
+        create: {
           productId: product.id,
-          categoryId: categoryMap[prod.type.toLowerCase()].id,
-        },
-      });
-    }
-
-    // Create product_variants and nested variant_items
-    for (const variantData of prod.product_variants) {
-      // product_variant (ej. Black, Purple)
-      const variant = await prisma.product_variants.create({
-        data: {
-          productId: product.id,
-          color: variantData.color,
-          standardPrice: variantData.price,
-          salePrice: variantData.price,
-          image: `/images/product/${slug}-${variantData.color}-main.jpg`,
-          altImage: `/images/product/${slug}-${variantData.color}-alt.jpg`,
+          slug: variantSlug,
+          name: `${p.name} - ${v.color}`,
+          color: v.color,
+          standardPrice: v.price,
+          salePrice: v.price,
+          image: `/images/product/${variantSlug}-main.jpg`,
           isDefault: false,
+          // stock: v.stock,
         },
       });
+      await prisma.variant_images.createMany({
+          data: [
+            {
+              productVariantId: variant.id,
+              image_url: `/images/product/${variantSlug}-1.jpg`,
+            },
+            {
+              productVariantId: variant.id,
+              image_url: `/images/product/${variantSlug}-2.jpg`,
+            },
+          ],
+        });
 
-      // Sizes → variant_items
-      for (const size of variantData.sizes) {
-        const sku = `${slug}-${variantData.color.toLowerCase()}-${size}`;
+      // --- Crear items (tallas) ---
+      for (let i = 0; i < v.sizes.length; i++) {
+        const size = v.sizes[i];
+        const sku = `${variantSlug}-${size}-${i}`;
+
         const item = await prisma.variant_items.create({
           data: {
             productVariantId: variant.id,
@@ -108,31 +111,21 @@ async function main() {
           },
         });
 
-        // Images por SKU → variant_images
-        await prisma.variant_images.createMany({
-          data: [
-            {
-              variantId: item.id,
-              image_url: `/images/product/${slug}-${variantData.color}-${size}-1.jpg`,
-            },
-            {
-              variantId: item.id,
-              image_url: `/images/product/${slug}-${variantData.color}-${size}-2.jpg`,
-            },
-          ],
-        });
+        
       }
     }
   }
+
+  console.log("✅ Product seed completed.");
 }
 
 main()
   .then(async () => {
-    console.log("✅  product seed with existing categories completed.");
+    console.log("✅ product seed with existing categories completed.");
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    console.error("❌ Error in seed:", e);
     await prisma.$disconnect();
     process.exit(1);
   });

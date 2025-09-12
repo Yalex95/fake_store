@@ -3,52 +3,22 @@ import { Prisma } from "@prisma/client";
 import { getQuery } from "h3";
 // import { select } from "#build/ui";
 export default defineEventHandler(async (event) => {
-  const productId = getRouterParam(event, "product");
-  const productDetails = await prisma.variants.findUnique({
-    where: {
-      deletedAt: null,
-      id: productId,
+  const identifier = getRouterParam(event, "product");
+  const product = await prisma.product_variants.findUnique({
+    where:{
+      slug: identifier
     },
-    include:{
-      product:{
-        select:{
-          brand: {
-            select: {
-              name: true
-            }
-          },
-          title:true,
-          description: true,
-          rating:true,
-          variants:true
-          // reviews:true
-        }
-      },
-      product_images:true
-    }
-  });
-  function getfinalPrice(
-    productPrice: number | null,
-    percentageOff: number | null
-  ): number {
-    if (!productPrice) return 0;
-    if (!percentageOff) return 0;
-    let finalPrice = productPrice * (1 - percentageOff / 100);
-    let decimals = finalPrice.toFixed(2)
-    return parseFloat(decimals);
-  }
-if(!productDetails) return [];
-  const { variants,...rest } = productDetails.product;
-  const { price,percentageOff} = productDetails;
-  productDetails.product = {
-    ...rest,
-    availableVariants: variants.map((v:any) => ({
-      ...v,
-      finalPrice: getfinalPrice(v.price,v.percentageOff)
-    })),
-  };
-  productDetails.finalPrice= getfinalPrice(price,percentageOff)
-return productDetails
+    select:{
+      gallery: true,
+      skus: true,
+      product:true
+      // categories:{include:{category:{include:{parent: true}}}}},
+  }});
+  // console.log(product);
+   return {type: "product", data: product}
+// const variant = await prisma.product_variants.findUnique({
 
-  // return product;
+// })
+// return productDetails
+
 });

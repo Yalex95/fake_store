@@ -6,15 +6,15 @@ const prisma = new PrismaClient();
 async function main() {
   // Main Catecategory
     const man = await prisma.category.upsert({
-    where: { slug: "man" },
+    where: { slug: "men" },
     update: {},
-    create: { name: "Man", slug: "man" },
+    create: { name: "Men", slug: "men" },
   });
 
-  const woman = await prisma.category.upsert({
-    where: { slug: "woman" },
+  const women = await prisma.category.upsert({
+    where: { slug: "women" },
     update: {},
-    create: { name: "Woman", slug: "woman" },
+    create: { name: "Women", slug: "women" },
   });
 
   const kids = await prisma.category.upsert({
@@ -34,42 +34,42 @@ async function main() {
   // subcat Man
   // ========================
   await prisma.category.upsert({
-    where: { slug: "man-footwear" },
+    where: { slug: "men-footwear" },
     update: {},
-    create: { name: "Footwear", slug: "man-footwear", parentId: man.id },
+    create: { name: "Footwear", slug: "men-footwear", parentId: man.id },
   });
 
   await prisma.category.upsert({
-    where: { slug: "man-clothes" },
+    where: { slug: "men-clothes" },
     update: {},
-    create: { name: "Clothes", slug: "man-clothes", parentId: man.id },
+    create: { name: "Clothes", slug: "men-clothes", parentId: man.id },
   });
 
   await prisma.category.upsert({
-    where: { slug: "man-accessories" },
+    where: { slug: "men-accessories" },
     update: {},
-    create: { name: "Accessories", slug: "man-accessories", parentId: man.id },
+    create: { name: "Accessories", slug: "men-accessories", parentId: man.id },
   });
 
   // ========================
-  // subcat Woman
+  // subcat Women
   // ========================
   await prisma.category.upsert({
-    where: { slug: "woman-footwear" },
+    where: { slug: "women-footwear" },
     update: {},
-    create: { name: "Footwear", slug: "woman-footwear", parentId: woman.id },
+    create: { name: "Footwear", slug: "women-footwear", parentId: women.id },
   });
 
   await prisma.category.upsert({
-    where: { slug: "woman-clothes" },
+    where: { slug: "women-clothes" },
     update: {},
-    create: { name: "Clothes", slug: "woman-clothes", parentId: woman.id },
+    create: { name: "Clothes", slug: "women-clothes", parentId: women.id },
   });
 
   await prisma.category.upsert({
-    where: { slug: "woman-accessories" },
+    where: { slug: "women-accessories" },
     update: {},
-    create: { name: "Accessories", slug: "woman-accessories", parentId: woman.id },
+    create: { name: "Accessories", slug: "women-accessories", parentId: women.id },
   });
 
   // ========================
