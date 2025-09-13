@@ -40,11 +40,17 @@ export default defineEventHandler(async (event) => {
       where,
       include: {
         variants:{
-          where: {isDefault: true},
           include:{
-            skus: true
+            gallery:{select:{image_url:true}},
+            
           }
         },
+        // {
+          // where: {isDefault: true},
+          // include:{
+          //   skus: true
+          // }
+        // },
         categories: {
           select:{
             category: {
@@ -70,9 +76,9 @@ export default defineEventHandler(async (event) => {
     }),
     prisma.product.count({where}),
   ]);
-  // console.log(rawData);
 const data = rawData.map((prod)=>{
-  let obj ={...prod, variant : prod.variants[0]||0}
+  let defaultVariant = prod.variants.find((dv)=>dv.isDefault)
+  let obj ={...prod, variant : defaultVariant}
   // delete obj.variants;
   return obj;
 })

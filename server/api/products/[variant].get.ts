@@ -4,7 +4,6 @@ import { getQuery } from "h3";
 // import { select } from "#build/ui";
 export default defineEventHandler(async (event) => {
   const identifier = getRouterParam(event, "variant");
-  console.log(event);
   const product = await prisma.product_variants.findUnique({
     where: {
       identifier: identifier,

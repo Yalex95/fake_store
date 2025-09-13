@@ -1,37 +1,21 @@
 <template>
   <div class="flex items-center justify-center">
-    <div class="w-10/12 flex gap-20">
+    <div class="w-11/12 flex ">
       <!-- Product Images -->
-      <div class="flex w-1/2 gap-20 h-auto">
-        <!-- images grid -->
-        <!-- <div
-          v-if="productDetails.product_images.length > 0"
-          class="w-20 p-3 items-center overflow-y-scroll overflow-x-hidden flex flex-col gap-4"
-        >
-          <div
-            v-for="images in productDetails.product_images"
-            class="w-10 h-10 border-1 border-gray-300 rounded-md flex justify-center items-center hover:bg-gray-300"
-          >
-            <img
-              :src="images.image_url || '/images/no_image.png'"
-              :alt="productDetails.title"
-              class="object-contain"
-            />
-          </div>
-        </div> -->
+      <div class="flex w-3/4 ">
         <!-- selected image -->
-        <div class="w-full overflow-hidden  h-[400px] ">
-          <img
+        <div class="grid grid-cols-2">
+          <img v-for="prod in productDetails.gallery"
             :src="
-              productDetails.image || '/images/no_image.png'
+              prod.image_url || '/images/no_image.png'
             "
-            :alt="productDetails.name"
-            class="w-[500px] h-[400px]  object-contain aspect-[1/1]"
+            :alt="prod.id"
+            class="w-[500px] h-[400px]  object-cover aspect-[1/1]"
           />
         </div>
       </div>
       <!-- Product deatils info-->
-      <div class="w-1/2">
+      <div class="w-1/4">
         <ProductDetailInfo
           :product-info="productDetails"
         />
@@ -50,5 +34,5 @@ const props = defineProps({
     default: {},
   },
 });
-
+console.log(props.productDetails)
 </script>
