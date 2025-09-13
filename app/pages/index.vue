@@ -11,15 +11,8 @@
         />
       </div>
 
-      <!-- Categories -->
-      <div class="flex justify-between   gap-x-20">
-        <div class="w-1/4 border-r-1 border-gray-100 pt-10 ps-10">
-          <p class="font-bold text-lg">Filter By</p>
-          <!-- <Filter url="categories" filterName="Categories"/> -->
-              <!-- <hr class="text-gray-200 "/> -->
-          <!-- <Filter url="brands" filterName="Brands"/> -->
-        </div>
-       
+      <!-- Product List -->
+      <div >
         <ProductList />
       </div>
       <!-- Offers -->

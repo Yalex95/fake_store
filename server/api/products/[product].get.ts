@@ -9,13 +9,14 @@ export default defineEventHandler(async (event) => {
       slug: identifier
     },
     select:{
+      productId: true,name: true,image: true,standardPrice: true,salePrice: true,color: true, slug:true,
       gallery: true,
       skus: true,
       product:true
       // categories:{include:{category:{include:{parent: true}}}}},
   }});
   // console.log(product);
-   return {type: "product", data: product}
+   return { data: product}
 // const variant = await prisma.product_variants.findUnique({
 
 // })

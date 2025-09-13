@@ -2,7 +2,7 @@
   <div v-for="product in products" :key="product.id"
     class="  border-2 border-solid rounded-xl border-gray-200  px-5 pt-5 pb-3">
     <ClientOnly>
-      <a v-if="product?.id" :href="`/product/${product?.variant.slug}`" class=" cursor-pointer">
+      <a v-if="product?.id" :href="product?.variant.slug" class=" cursor-pointer">
       <!-- image and favorite icon -->
       <div class="rounded-xl  lg:aspect-auto lg:h-56 text-center container flex items-center overflow-hidden relative">
         <!-- favorite -->

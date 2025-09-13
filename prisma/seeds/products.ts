@@ -68,18 +68,18 @@ async function main() {
 }
     // --- Crear variantes ---
     for (const v of p.variants) {
-      const variantSlug = `${slug}-${v.color.toLowerCase()}`;
+      const variantSlug = `/product/${slug}/${p.name.toLowerCase()}-${v.color}`;
       const variant = await prisma.product_variants.upsert({
         where: { slug: variantSlug },
         update: {},
         create: {
           productId: product.id,
-          slug: variantSlug,
+          slug: variantSlug,//TODO: cambiarlo por el id y recortar
           name: `${p.name} - ${v.color}`,
           color: v.color,
           standardPrice: v.price,
           salePrice: v.price,
-          image: `/images/product/${variantSlug}-main.jpg`,
+          image: `/images/product/${slug}-${v.color.toLowerCase()}-main.jpg`,
           isDefault: false,
           // stock: v.stock,
         },

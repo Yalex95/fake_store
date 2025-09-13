@@ -5,16 +5,16 @@
       <div class="flex w-1/2 gap-20 h-auto">
         <!-- images grid -->
         <!-- <div
-          v-if="productDetails.product_images.length > 0"
+          v-if="productDetails.data.product_images.length > 0"
           class="w-20 p-3 items-center overflow-y-scroll overflow-x-hidden flex flex-col gap-4"
         >
           <div
-            v-for="images in productDetails.product_images"
+            v-for="images in productDetails.data.product_images"
             class="w-10 h-10 border-1 border-gray-300 rounded-md flex justify-center items-center hover:bg-gray-300"
           >
             <img
               :src="images.image_url || '/images/no_image.png'"
-              :alt="productDetails.title"
+              :alt="productDetails.data.title"
               class="object-contain"
             />
           </div>
@@ -23,9 +23,9 @@
         <div class="w-full overflow-hidden  h-[400px] ">
           <img
             :src="
-              productDetails.image_url || '/images/no_image.png'
+              productDetails.data.image || '/images/no_image.png'
             "
-            :alt="productDetails.name"
+            :alt="productDetails.data.name"
             class="w-[500px] h-[400px]  object-contain aspect-[1/1]"
           />
         </div>
@@ -36,8 +36,8 @@
           :product-info="productDetails"
         />
         <!-- <ProductVariants
-          :variants="productDetails.product.availableVariants"
-          :selectedVariant="productDetails.id"
+          :variants="productDetails.data.product.availableVariants"
+          :selectedVariant="productDetails.data.id"
         /> -->
       </div>
     </div>
