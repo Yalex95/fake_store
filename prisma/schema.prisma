@@ -111,6 +111,7 @@ model product_variants {
   productId String  @db.Uuid
   product   product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  identifier String @unique @db.VarChar(255)
   slug        String  @unique @db.VarChar(255)
   name          String? @db.VarChar(255)
   image         String? @db.VarChar(500)

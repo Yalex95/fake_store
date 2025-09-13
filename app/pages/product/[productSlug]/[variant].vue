@@ -2,7 +2,7 @@
   <div>
     <NuxtLayout name="custom">
      <div class="my-20">
-       <ProductDetailView :productDetails="productDetails"/>
+       <ProductDetailView :productDetails="productDetails.data"/>
      </div>
 
     </NuxtLayout>
@@ -10,8 +10,8 @@
 </template>
 <script setup>
 const route= useRoute();
-const productId = route.params.product;
+console.log(route.params)
+const variantId = route.params.variant;
 
-const {data: productDetails, status,error}=await useFetch(`/api/products/${productId}`)
-console.log(productDetails.value);
+const {data: productDetails, status,error}=await useFetch(`/api/products/${variantId}`)
 </script>
