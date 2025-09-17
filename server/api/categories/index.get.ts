@@ -8,7 +8,7 @@ export default defineEventHandler(async()=>{
     select: {
       id: true,
       name: true,
-      image: true,
+      // image: true,
     },
     orderBy: {
       createdAt: 'desc',

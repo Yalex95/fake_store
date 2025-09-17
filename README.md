@@ -67,12 +67,11 @@ docker compose exec server npx tsx prisma/seeds/products.ts
 
 
 ⚠️ Seed in the correct order:
-Step 1 (no relations)
+##### Step 1 (no relations)
  - Users
-- Brands
 - Categories
-Step 2 (with relations)
-- products
+##### Step 2 (with relations)
+- Products
 - variants
 - product images
 

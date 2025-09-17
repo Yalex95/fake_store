@@ -2,37 +2,44 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", ["@prisma/nuxt", { client: false }]],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    ["@prisma/nuxt", { client: false }],
+    "nuxt-headlessui",
+    "@nuxt/icon",
+      "@pinia/nuxt",
+    'pinia-plugin-persistedstate/nuxt',
+  ],
   css: ["~/assets/css/index.css", "~/assets/css/main.css"],
-  ui: {
-    // prefix: 'Nuxt',
-    fonts: false,
-    colorMode: false,
-  },
 
   vite: {
-    // server: {
-    //   watch: {
-    //     usePolling: true,
-    //     interval: 300 // puedes probar entre 100–300ms
-    //   },
-    //   hmr: {
-    //     host: 'localhost',
-    //     port: 3001
-    //   }
-    // },
-    ssr: {
-      // No externaliza Prisma, deja que se use solo Node
-      external: ["@prisma/client"],
-    },
-    resolve: {
-      alias: {
-        ".prisma/client/index-browser":
-          "./node_modules/.prisma/client/index-browser.js",
+    server: {
+      watch: { usePolling: true },
+
+      hmr: {
+        protocol: "ws",
+        host: "localhost",
+        port: 3000,
       },
     },
-    // build: {
-  //   transpile: []
-  // }
   },
+  //   build: {
+  //     rollupOptions: {},
+  //   },
+  //   ssr: {
+  //     external: ["@prisma/client", "oxc-parser", "jsonwebtoken", "bcryptjs"],
+  //   },
+  //   resolve: {
+  //     alias: {
+  //       "@prisma/client/index-browser":
+  //         "/app/node_modules/.prisma/client/index-browser.js",
+  //     },
+  //   },
+  // },
+  // nitro: {
+  //   watchOptions: {
+  //     usePolling: true,
+  //     interval: 100,
+  //   },
+  // },
 });

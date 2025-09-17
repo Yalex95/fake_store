@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   //Sanitize and validate params
-  const title = typeof query.title === "string" ? query.title : "";
+  const name = typeof query.name === "string" ? query.name : "";
   const category = typeof query.category === "string" ? query.category : null;
 
   //Pagination
@@ -19,9 +19,9 @@ export default defineEventHandler(async (event) => {
     deletedAt: null,
   };
 
-  if (title) {
-    where.title = {
-      contains: title,
+  if (name) {
+    where.name = {
+      contains: name,
       mode: "insensitive",
     };
   }
@@ -36,26 +36,37 @@ export default defineEventHandler(async (event) => {
   }
   //Get data and count products
   const [rawData, total] = await Promise.all([
-    await prisma.products.findMany({
+    await prisma.product.findMany({
       where,
       include: {
-        variants: {
-          select: {
-            id: true,
-            image_url: true,
-            color: true,
-            size: true,
-            price: true,
-            stock: true,
-            percentageOff: true,
-            sku: true,
-          },
-          where: { deletedAt: null },
-          // take: 1,
+        variants:{
+          include:{
+            gallery:{select:{image_url:true}},
+            
+          }
         },
-        category: {
-          select: { name: true },
-        },
+        // {
+          // where: {isDefault: true},
+          // include:{
+          //   skus: true
+          // }
+        // },
+        categories: {
+          select:{
+            category: {
+              select:{
+            name:true,
+                slug:true,
+                parent:{
+                  select:{
+                    name: true, slug: true
+                  }
+                }
+
+              }
+            }
+          }
+        }
       },
       orderBy: {
         createdAt: "desc",
@@ -63,35 +74,15 @@ export default defineEventHandler(async (event) => {
       skip,
       take: limit,
     }),
-    prisma.products.count({ where }),
+    prisma.product.count({where}),
   ]);
-  function getfinalPrice(
-    productPrice: number | null,
-    percentageOff: number | null
-  ): number {
-    if (!productPrice) return 0;
-    if (!percentageOff) return 0;
-    return productPrice * (1 - percentageOff / 100);
-  }
-  //Clean result and return default variant
-  const data = rawData.map((product) => {
-    const { variants, ...rest } = product;
-    return {
-      ...rest,
-      availableColors: variants.map((v) => ({
-        color: v.color,
-        variantID: v.id,
-      })),
-      defaultVariant: {
-        ...(variants[0] ?? null),
-        finalPrice: getfinalPrice(
-          variants[0]?.price,
-          variants[0]?.percentageOff
-        ), //TODO: it will ned to be a col if the db will grow, for best practices it shoud be a col in product variants
-      },
-    };
-  });
-
+const data = rawData.map((prod)=>{
+  let defaultVariant = prod.variants.find((dv)=>dv.isDefault)
+  let obj ={...prod, variant : defaultVariant}
+  // delete obj.variants;
+  return obj;
+})
+// delete data.variants;
   //generate pagination meta
   const pages = Math.ceil(total / limit);
   const first_page = 1;

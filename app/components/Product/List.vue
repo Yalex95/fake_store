@@ -1,20 +1,20 @@
 <template>
-    <div class=" xl:w-11/12   py-16 sm:py-24 lg:w-11/12 ">
+    <div class=" w-10/12 py-20 mx-auto">
       
-        <SectionHeader :title="title"/>
+        <SectionHeader v-if="productsList?.data.length > 0" :title="title"/>
 
-      <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 ">
+      <div :class="[productsList?.data.length > 0?'mt-3 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8 ':'flex justify-center']">
         <ProductItem 
-        v-if="productsList.data.length > 0" :products="productsList?.data"/>
+        v-if="productsList?.data.length > 0" :products="productsList?.data"/>
         <div v-else class="text-black-500">
           <p>No products to show.</p>
         </div>
       </div>
-     <div v-if="productsList.data.length > 0 && productsList.data.length > limit" class="flex justify-center items center mt-5">
-       <UPagination v-model:page="page" 
+     <div  class="flex justify-center items center mt-5">
+       <!-- <UPagination v-model:page="page" 
        :items-per-page="limit"
         :total="productsList.meta.total"
-         />
+         /> -->
      </div>
     </div>
  
@@ -35,30 +35,35 @@ const route = useRoute();
 const router = useRouter();
 const  page = ref(parseInt(route.query.page) || 1);
 const category = ref(route.query.category || null)
-const query = computed(()=>{
-  return {
-    category: category.value,
-    limit: props.limit,
-    page: page.value
-  }
+
+// const page = ref(parseInt(route.query.page) || 1)
+// const category = ref(route.query.category || null)
+
+// construimos la URL en base a los valores reactivos
+// const url = computed(() => {
+//   const params = new URLSearchParams({
+//     page: page.value.toString(),
+//     limit: props.limit.toString(),
+//   })
+//   if (category.value) {
+//     params.append('category', category.value)
+//   }
+//   return `/api/products?${params.toString()}`
+// })
+
+// fetch automático cada vez que cambie la URL
+const { data: productsList, status, pending, error } = await useFetch('/api/products', {
+  immediate: true, // carga al inicio
 })
+// const query = computed(()=>({
+//     category: category.value,
+//     limit: props.limit,
+//     page: page.value
+//   }))
+// const url =computed(()=>`/api/products?category=${category.value}&page=${page.value}`)
+// const {data: productsList, status, pending,error, refresh} = await useFetch(url,{
+// method:'GET',
+// })
 
 
-const {data: productsList, status, pending,error, refresh} = await useFetch(`/api/products`,{
-method:'GET',
-query
-})
-
-// const { data: productsList, error, refresh } = await useAsyncData('products', () =>
-//   $fetch('/api/products', { method: 'GET', query: query.value })
-// )
-watch(page,(newPage)=>{
-  router.push({
-    query:{
-      ...route.query,
-      page: newPage
-    },
-    // hash: route.hash
-  })
-})
 </script>
