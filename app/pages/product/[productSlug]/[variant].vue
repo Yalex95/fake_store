@@ -1,8 +1,8 @@
 <template>
   <div>
     <NuxtLayout name="custom">
-     <div class="my-20">
-       <ProductDetailView :productDetails="productDetails.data"/>
+      <ProductDetailView :productDetails="productDetails.data"/>
+     <div class="">
      </div>
 
     </NuxtLayout>
