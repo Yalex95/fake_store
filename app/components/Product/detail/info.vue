@@ -18,7 +18,7 @@
     </span>
     <p class="font-bold text-md">Colors</p>
     <div class="grid grid-cols-5 gap-1">
-      <a
+      <a                                                                                                                                                                                                                            
         :href="variant.slug"
         class=""
         v-for="variant in productInfo.product.variants"
@@ -45,6 +45,16 @@
         >MX
         {{ variantSize.size }}
       </span>
+    </div>
+    <div>
+      <UITwButton
+        buttonId="addCart"
+        buttonClass="bg-black-500"
+        rounded=""
+        buttonTextClass="text-white"
+        buttonText=""
+      />
+      <UITwButton />
     </div>
   </div>
 </template>
