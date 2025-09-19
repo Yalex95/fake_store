@@ -93,6 +93,7 @@ docker compose exec server npx tsx prisma/seeds/products.ts
 - `npx prisma migrate dev --name change-id-to-uuid` -> Creates a new migration
 
 - `npx tsx prisma/seeds/seed.ts`-> Run custom seed script
+- `npx prisma db push`-> create db
 
 ---
 ## DB Schema Overview
