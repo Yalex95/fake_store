@@ -65,6 +65,7 @@ const props = defineProps({
     default: () => [],
   },
 });
+// console.log(props.products)
 interface variant {
   id: string;
   standardPrice: string;

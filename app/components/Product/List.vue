@@ -55,6 +55,7 @@ const category = ref(route.query.category || null)
 const { data: productsList, status, pending, error } = await useFetch('/api/products', {
   immediate: true, // carga al inicio
 })
+// console.log(productsList.value)
 // const query = computed(()=>({
 //     category: category.value,
 //     limit: props.limit,

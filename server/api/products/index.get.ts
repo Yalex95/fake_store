@@ -82,6 +82,7 @@ const data = rawData.map((prod)=>{
   // delete obj.variants;
   return obj;
 })
+
 // delete data.variants;
   //generate pagination meta
   const pages = Math.ceil(total / limit);

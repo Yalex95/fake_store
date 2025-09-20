@@ -16,12 +16,6 @@ export default defineEventHandler(async (event) => {
       color: true,
       slug: true,
       gallery: true,
-      skus: true,
-      product: {
-        include:{
-          variants:true
-        }
-      },
     },
   });
   return { data: product };
